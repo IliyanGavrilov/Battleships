@@ -1,5 +1,7 @@
 #include <iostream>
 #include <fstream>
+#include <ctime> // for random
+// #include <cstdlib> // for random
 
 #define MIN_SIZE 5
 #define MAX_SIZE 20
@@ -13,16 +15,44 @@ enum Difficulty {Easy = 1, Medium = 2, Hard = 3, Impossible = 4};
 enum Randomness {Normal = 'n', Rigged = 'y'};
 enum Placement {CreateCustom = 1, LoadFromFile = 2, Random = 3};
 enum TileState {Water = '~', Unhit = '!', Hit = 'X', Miss = 'O', Sunken = '*'};
+enum BoatTypes {Destroyer = 2, Submarine = 3 , Battleship = 4, Carrier = 5};
 
 struct point_t {
   int x;
   int y;
+
+  point_t();
+  point_t(int, int);
 };
+
+point_t::point_t() {
+  this->x = 0;
+  this->y = 0;
+}
+
+point_t::point_t(int x, int y) {
+  this->x = x;
+  this->y = y;
+}
 
 struct ship_t {
   int size;
   point_t end_coords[2];
+
+  ship_t(int, point_t, point_t);
+  ship_t();
 };
+
+ship_t::ship_t() {
+  this->size = 0;
+  this->end_coords[2] = {};
+}
+
+ship_t::ship_t(int size, point_t p1, point_t p2){
+  this->size = size;
+  this->end_coords[0] = p1;
+  this->end_coords[1] = p2;
+}
 
 // Check input
 bool validate_input(int size, GameType gameType, SuccessfulHit successfulHit, Mode mode, Difficulty difficulty, Randomness randomness) {
@@ -75,33 +105,39 @@ void fix_start_end_coords(point_t &p1, point_t &p2) {
   }
 }
 
+void print_error_code(int error_code) {
+  cout << "Invalid coordinates - ";
+  switch(error_code) {
+    case 1: cout << "Coordinates are outside of the map!\n";break;
+    case 2: cout << "Coordinates not lying on same row/column!\n";break;
+    case 3: cout << "Coordinates do not match ship size!\n";break;
+    case 4: cout << "There is a ship lying between the given points!\n";break;
+  }
+}
+
 // TODO "const" TileState ** const map, const int size, const ship_t end_points
 // TODO space between for () if () while () etc.
-bool valid_coords(TileState ** map, int map_size, int ship_size, point_t p1, point_t p2) {
+int validate_coords(TileState ** map, int map_size, int ship_size, point_t p1, point_t p2) {
   // Coordinates are outside of map
   if(p1.x < 0 || p1.x >= map_size || p2.x < 0 || p2.x >= map_size || p1.y < 0 || p1.y >= map_size || p2.y < 0 || p2.y >= map_size) {
-    cout << "Invalid coordinates - Given coordinates are outside of the map!\n";
-    return false;
+    return 1;
   }
 
   // Coordinates not on same row/column
   if(p1.x != p2.x && p1.y != p2.y) {
-    cout << "Invalid coordinates - Given coordinates not lying on same row/column!\n";
-    return false;
+    return 2;
   }
 
   // Vertical ship
   if(p1.x == p2.x) {
     // If given coordinates can fit ship perfectly
     if(p2.y - p1.y + 1 != ship_size) {
-      cout << "Invalid coordinates - Given coordinates do not match ship size!\n";
-      return false;
+      return 3;
     }
 
     for(int i = p1.y; i <= p2.y; i++) {
       if(map[i][p1.x] != TileState::Water) {
-        cout << "Invalid coordinates - There is a ship lying between the given points!\n";
-        return false;
+        return 4;
       }
     }
   }
@@ -109,19 +145,17 @@ bool valid_coords(TileState ** map, int map_size, int ship_size, point_t p1, poi
   else {
     // If given coordinates can fit ship perfectly
     if(p2.x - p1.x + 1 != ship_size) {
-      cout << "Invalid coordinates - Given coordinates do not match ship size!\n";
-      return false;
+      return 3;
     }
 
     for(int i = p1.x; i <= p2.x; i++) {
       if(map[p1.y][i] != TileState::Water) {
-        cout << "Invalid coordinates - There is a ship lying between the given points!\n";
-        return false;
+        return 4;
       }
     }
   }
 
-  return true;
+  return 0;
 }
 
 void set_ship_coords_on_map(TileState **map, ship_t ship) {
@@ -151,7 +185,7 @@ void print_map(TileState **map, int size) {
 }
 
 TileState **create_custom_map(int size, int *ships_to_place, ship_t *ships) {
-  TileState **map = new TileState *[size];
+  TileState **map = new TileState *[size]; // TODO prevent fragmentation of memory
   for(int i = 0; i < size; i++) {
     map[i] = new TileState[size];
     for(int j = 0; j < size; j++) {
@@ -160,16 +194,20 @@ TileState **create_custom_map(int size, int *ships_to_place, ship_t *ships) {
   }
 
   for(int i = 0; i < 5;) {
-    point_t p1 = {}, p2 = {};
-    cout << "Place ship with size " << ships_to_place[i] << "(x1 y1 x2 y2)\n";
+    point_t p1, p2;
+    cout << "Place ship with size " << ships_to_place[i] << "(x1 y1 x2 y2) [0, " << size - 1 << "]\n";
     cin >> p1.x >> p1.y >> p2.x >> p2.y;
 
     fix_start_end_coords(p1, p2);
 
-    if(valid_coords(map, size, ships_to_place[i], p1, p2)) {
+    int error_code = validate_coords(map, size, ships_to_place[i], p1, p2);
+    if(!error_code) {
       ships[i] = ship_t{ships_to_place[i], p1, p2};
       set_ship_coords_on_map(map, ships[i]);
       i++;
+    }
+    else {
+      print_error_code(error_code);
     }
   }
 
@@ -177,7 +215,7 @@ TileState **create_custom_map(int size, int *ships_to_place, ship_t *ships) {
 }
 
 TileState **create_random_map(int size, int *ships_to_place, ship_t *ships) {
-  TileState **map = new TileState *[size];
+  TileState **map = new TileState *[size]; // TODO prevent fragmentation of memory
   for(int i = 0; i < size; i++) {
     map[i] = new TileState[size];
     for(int j = 0; j < size; j++) {
@@ -186,11 +224,30 @@ TileState **create_random_map(int size, int *ships_to_place, ship_t *ships) {
   }
 
   for(int i = 0; i < 5;) {
-    point_t p1 = {}, p2 = {};
+    point_t p1, p2;
+
+    // Formula: (rand() % (ub - lb + 1)) + lb
+    int x = rand() % size;
+    int y = rand() % size;
+
+    p1 = point_t(x, y);
+    // Horizontal or vertical ship
+    if(rand() % 2) { // Same y - horizontal ship
+      // Going left or right from first point
+      x = (rand() % 2) ? (x - ships_to_place[i] - 1) : (x + ships_to_place[i] - 1);
+    }
+    else { // Same x - vertical ship
+      // Going down or up from first point
+      y = (rand() % 2) ? (x - ships_to_place[i] - 1) : (x + ships_to_place[i] - 1);
+    }
+    p2 = point_t(x, y);
+
+    cout << "Random points: " << p1.x << " " << p1.y << ", " << p2.x << " " << p2.y << "\n";
 
     fix_start_end_coords(p1, p2);
 
-    if(valid_coords(map, size, ships_to_place[i], p1, p2)) {
+    int error_code = validate_coords(map, size, ships_to_place[i], p1, p2);
+    if(!error_code) {
       ships[i] = ship_t{ships_to_place[i], p1, p2};
       set_ship_coords_on_map(map, ships[i]);
       i++;
@@ -255,6 +312,7 @@ void free_map_memory(TileState **map, int size) {
 void start_game(int map_size, GameType gameType, SuccessfulHit successfulHit, Mode mode, Difficulty difficulty, Randomness randomness) {
   // Create both maps
   Placement placement = get_placement();
+  cout << "Player 1 map:\n";
   TileState **map1 = generate_map(map_size, placement);
 
   TileState **map2;
@@ -263,6 +321,7 @@ void start_game(int map_size, GameType gameType, SuccessfulHit successfulHit, Mo
   }
   else {
     placement = get_placement();
+    cout << "Player 2 map:\n";
     map2 = generate_map(map_size, placement);
   }
 
@@ -276,6 +335,9 @@ void start_game(int map_size, GameType gameType, SuccessfulHit successfulHit, Mo
 }
 
 int main() {
+  // Set random seed
+  srand(time(NULL));
+
   // Get input as int or char to convert it to enum afterwards
   int map_size, iDifficulty, iGameType;
   char cMode, cRandomness, cSuccessfulHit;
