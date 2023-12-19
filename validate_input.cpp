@@ -1,6 +1,6 @@
 #include "validate_input.hh"
 
-bool validate_input(int size, GameType gameType, SuccessfulHit successfulHit, Mode mode, Difficulty difficulty, Randomness randomness) {
+bool validate_input(GameType gameType, int size, SuccessfulHit successfulHit, Mode mode, Difficulty difficulty, Randomness randomness) {
   // Check game type
   if(gameType != GameType::Load && gameType != GameType::New) {
     return false;
@@ -22,7 +22,8 @@ bool validate_input(int size, GameType gameType, SuccessfulHit successfulHit, Mo
   }
 
   // Check difficulty of bot
-  if(difficulty != Difficulty::Easy && difficulty != Difficulty::Medium && difficulty != Difficulty::Hard && difficulty != Difficulty::Impossible) {
+  if(difficulty != Difficulty::Easy && difficulty != Difficulty::Medium &&
+     difficulty != Difficulty::Hard && difficulty != Difficulty::Impossible) {
     return false;
   }
 
@@ -68,13 +69,32 @@ int validate_ship_coords(TileState ** map, int map_size, int ship_size, point_t 
     return 2;
   }
 
+  // Custom amount of ships - if player can't fit any more of this type of ships end inputting
+//  for(int i = 0; i < map_size; i++) {
+//    int count_horizontal_tiles = 0;
+//    int count_vertical_tiles = 0;
+//
+//    for(int j = 0; j < map_size; j++) {
+//      for(int )
+//
+//      if(count_horizontal_tiles >= ship_size || count_vertical_tiles >= ship_size) {
+//        break;
+//      }
+//    }
+//
+//    if(count_horizontal_tiles >= ship_size || count_vertical_tiles >= ship_size) {
+//      break;
+//    }
+//  }
+
   // Vertical ship
   if(p1.x == p2.x) {
-    // If given coordinates can fit ship perfectly
+    // Coordinates don't correspond to size a.k.a. coordinates can't fit ship perfectly
     if(p2.y - p1.y + 1 != ship_size) {
       return 3;
     }
 
+    // Another ship between given points
     for(int i = p1.y; i <= p2.y; i++) {
       if(map[i][p1.x] != TileState::Water) {
         return 4;
@@ -83,11 +103,12 @@ int validate_ship_coords(TileState ** map, int map_size, int ship_size, point_t 
   }
     // Horizontal ship (y1 == y2)
   else {
-    // If given coordinates can fit ship perfectly
+    // Coordinates don't correspond to size  a.k.a. coordinates can't fit ship perfectly
     if(p2.x - p1.x + 1 != ship_size) {
       return 3;
     }
 
+    // Another ship between given points
     for(int i = p1.x; i <= p2.x; i++) {
       if(map[p1.y][i] != TileState::Water) {
         return 4;
@@ -96,4 +117,23 @@ int validate_ship_coords(TileState ** map, int map_size, int ship_size, point_t 
   }
 
   return 0;
+}
+
+void print_invalid_coords_error_code(int error_code) {
+  std::cerr << "Invalid coordinates - ";
+  switch(error_code) {
+    case 1: std::cerr << "Coordinates are outside of the map!\n";break;
+    case 2: std::cerr << "Coordinates not lying on same row/column!\n";break;
+    case 3: std::cerr << "Coordinates do not match ship size!\n";break;
+    default: std::cerr << "There is a ship lying between the given points!\n";break; // case 4
+  }
+}
+
+void print_file_errors(int error_code) {
+  switch(error_code) {
+    case 1: std::cerr << "File with given name does not exist!\n";break;
+    case 2: std::cerr << "File is empty!\n";break;
+    default: std::cerr << "Error while opening file!\n";break; // case 3
+
+  }
 }

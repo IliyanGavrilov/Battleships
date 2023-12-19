@@ -1,5 +1,12 @@
 #include "player.hh"
 
+player_t::player_t() {
+  this->map = nullptr;
+  this->map_size = 0;
+  this->ships = nullptr;
+  this->ships_count = 0;
+}
+
 player_t::player_t(int map_size, ship_t *ships, int ships_count) {
   this->map = nullptr;
   this->map_size = map_size;
@@ -20,6 +27,7 @@ player_t::~player_t() {
   map = nullptr;
   map_size = 0;
 
+  delete[] ships;
   ships = nullptr;
   ships_count = 0;
 }

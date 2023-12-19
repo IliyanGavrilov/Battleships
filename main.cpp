@@ -8,3 +8,4 @@ int main() {
 // TODO Continue game (load game from file)
 // TODO Repeat turn after hitting a ship
 // TODO Load map from file
+// TODO Custom amount of ships - if player can't fit any more of this type of ships end inputting

@@ -10,6 +10,7 @@ struct player_t {
   ship_t *ships;
   int ships_count;
 
+  player_t();
   player_t(int, ship_t *, int);
   ~player_t();
   void print_map();

@@ -1,6 +1,6 @@
 #include "map_creation.hh"
 
-void create_custom_map(player_t player) {
+void create_custom_map(player_t &player) {
   player.map = new TileState *[player.map_size]; // TODO prevent fragmentation of memory
   for(int i = 0; i < player.map_size; i++) {
     player.map[i] = new TileState[player.map_size];
@@ -17,6 +17,7 @@ void create_custom_map(player_t player) {
     ship_t::fix_start_end_coords(p1, p2);
 
     int error_code = validate_ship_coords(player.map, player.map_size, player.ships[i].size, p1, p2);
+
     if(!error_code) {
       player.ships[i] = ship_t(player.ships[i].size, p1, p2);
       set_ship_coords_on_map(player.map, player.ships[i]);
@@ -28,7 +29,7 @@ void create_custom_map(player_t player) {
   }
 }
 
-void create_random_map(player_t player) {
+void create_random_map(player_t &player) {
   player.map = new TileState *[player.map_size]; // TODO prevent fragmentation of memory
   for(int i = 0; i < player.map_size; i++) {
     player.map[i] = new TileState[player.map_size];
@@ -69,7 +70,7 @@ void create_random_map(player_t player) {
   }
 }
 
-void generate_map(player_t player, Placement ship_placement) {
+void generate_map(player_t &player, Placement ship_placement) {
   switch (ship_placement) {
     case Placement::CreateCustom: {
       create_custom_map(player);
@@ -85,16 +86,6 @@ void generate_map(player_t player, Placement ship_placement) {
   // print_map(map, size); // TODO TEMP
   // Clear terminal so other player doesn't see coordinates entered
   // system("@cls||clear");;
-}
-
-void print_invalid_coords_error_code(int error_code) {
-  std::cout << "Invalid coordinates - ";
-  switch(error_code) {
-    case 1: std::cout << "Coordinates are outside of the map!\n";break;
-    case 2: std::cout << "Coordinates not lying on same row/column!\n";break;
-    case 3: std::cout << "Coordinates do not match ship size!\n";break;
-    default: std::cout << "There is a ship lying between the given points!\n";break; // case 4
-  }
 }
 
 void set_ship_coords_on_map(TileState **map, ship_t ship) {

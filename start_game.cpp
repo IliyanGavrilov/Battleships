@@ -1,7 +1,7 @@
 #include "start_game.hh"
 
-void start_game(ship_t *ships_to_place, int ships_count, int map_size, GameType gameType,
-                SuccessfulHit successfulHit, Mode mode, Difficulty difficulty, Randomness randomness) {
+void start_game(ship_t *ships_to_place, int ships_count, int map_size, SuccessfulHit successfulHit,
+                Mode mode, Difficulty difficulty, Randomness randomness) {
   // Set random seed
   srand(time(nullptr));
 

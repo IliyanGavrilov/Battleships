@@ -1,3 +1,3 @@
 #pragma once
 
-enum SuccessfulHit {RepeatTurn = 'y', SwitchTurn = 'n'};
+enum SuccessfulHit {RepeatTurn = 1, SwitchTurn = 2};

@@ -10,12 +10,10 @@
 
 #pragma once
 
-void create_custom_map(player_t player);
+void create_custom_map(player_t &player);
 
-void create_random_map(player_t player);
+void create_random_map(player_t &player);
 
-void generate_map(player_t player, Placement ship_placement);
-
-void print_invalid_coords_error_code(int error_code);
+void generate_map(player_t &player, Placement ship_placement);
 
 void set_ship_coords_on_map(TileState **map, ship_t ship);

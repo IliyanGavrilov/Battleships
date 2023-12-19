@@ -1,6 +1,5 @@
 #include <iostream>
 
-#include "GameType.hh"
 #include "SuccessfulHit.hh"
 #include "Mode.hh"
 #include "Difficulty.hh"
@@ -14,5 +13,5 @@
 
 #pragma once
 
-void start_game(ship_t *ships_to_place, int ships_count, int map_size, GameType gameType,
-                SuccessfulHit successfulHit, Mode mode, Difficulty difficulty, Randomness randomness);
+void start_game(ship_t *ships_to_place, int ships_count, int map_size, SuccessfulHit successfulHit,
+                Mode mode, Difficulty difficulty, Randomness randomness);

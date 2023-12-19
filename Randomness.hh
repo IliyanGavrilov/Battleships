@@ -1,3 +1,3 @@
 #pragma once
 
-enum Randomness {Normal = 'n', Rigged = 'y'};
+enum Randomness {Normal = 1, Rigged = 2};

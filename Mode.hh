@@ -1,3 +1,3 @@
 #pragma once
 
-enum Mode {Singleplayer = 's', Multiplayer = 'm'};
+enum Mode {Singleplayer = 1, Multiplayer = 2};
