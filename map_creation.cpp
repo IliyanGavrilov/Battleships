@@ -1,6 +1,6 @@
 #include "map_creation.hh"
 
-void create_custom_map(player_t &player) {
+int create_custom_map(player_t &player) {
   player.map = new TileState *[player.map_size]; // TODO prevent fragmentation of memory
   for(int i = 0; i < player.map_size; i++) {
     player.map[i] = new TileState[player.map_size];
@@ -25,11 +25,16 @@ void create_custom_map(player_t &player) {
     }
     else {
       print_invalid_coords_error_code(error_code);
+      if(error_code == 3) {
+        return -1;
+      }
     }
   }
+
+  return 0;
 }
 
-void create_random_map(player_t &player) {
+int create_random_map(player_t &player) {
   player.map = new TileState *[player.map_size]; // TODO prevent fragmentation of memory
   for(int i = 0; i < player.map_size; i++) {
     player.map[i] = new TileState[player.map_size];
@@ -62,30 +67,47 @@ void create_random_map(player_t &player) {
     ship_t::fix_start_end_coords(p1, p2);
 
     int error_code = validate_ship_coords(player.map, player.map_size, player.ships[i].size, p1, p2);
+
     if(!error_code) {
       player.ships[i] = ship_t(player.ships[i].size, p1, p2);
       set_ship_coords_on_map(player.map, player.ships[i]);
       i++;
     }
+    else if(error_code == 3) {
+      print_invalid_coords_error_code(error_code);
+      return -1;
+    }
   }
+
+  return 0;
 }
 
-void generate_map(player_t &player, Placement ship_placement) {
+int generate_map(player_t &player, Placement ship_placement) {
   switch (ship_placement) {
     case Placement::CreateCustom: {
-      create_custom_map(player);
+      if(!create_custom_map(player)) {
+        return -1;
+      }
     }break;
     case Placement::LoadFromFile: {
-      //load_map_from_file();
+//      if(!load_map_from_file()) {
+//        return -1;
+//      }
     }break;
     case Placement::Random: {
-      create_random_map(player);
+      if(!create_random_map(player)) {
+        return -1;
+      }
     }break;
+
+    // TODO ask player to save map to file
   }
 
   // print_map(map, size); // TODO TEMP
   // Clear terminal so other player doesn't see coordinates entered
   // system("@cls||clear");;
+
+  return 0;
 }
 
 void set_ship_coords_on_map(TileState **map, ship_t ship) {

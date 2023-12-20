@@ -1,6 +1,6 @@
 #include "start_game.hh"
 
-void start_game(ship_t *ships_to_place, int ships_count, int map_size, SuccessfulHit successfulHit,
+int start_game(ship_t *ships_to_place, int ships_count, int map_size, SuccessfulHit successfulHit,
                 Mode mode, Difficulty difficulty, Randomness randomness) {
   // Set random seed
   srand(time(nullptr));
@@ -12,15 +12,21 @@ void start_game(ship_t *ships_to_place, int ships_count, int map_size, Successfu
   // Create both maps
   Placement placement = get_placement();
   std::cout << "Player 1 map:\n";
-  generate_map(player1, placement);
+  if(!generate_map(player1, placement)) {
+    return -1;
+  }
 
   if(mode == Mode::Singleplayer) {
-    generate_map(player2, Placement::Random);
+    if(!generate_map(player2, Placement::Random)) {
+      return -1;
+    }
   }
   else {
     placement = get_placement();
     std::cout << "Player 2 map:\n";
-    generate_map(player2, placement);
+    if(!generate_map(player2, placement)) {
+      return -1;
+    }
   }
 
   std::cout << "\n";
@@ -31,4 +37,6 @@ void start_game(ship_t *ships_to_place, int ships_count, int map_size, Successfu
   // Free map memory by calling the players' destructors
   player1.player_t::~player_t();
   player2.player_t::~player_t();
+
+  return 0;
 }
