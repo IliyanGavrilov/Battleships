@@ -90,9 +90,19 @@ int generate_map(player_t &player, Placement ship_placement) {
       }
     }break;
     case Placement::LoadFromFile: {
-//      if(!load_map_from_file()) {
-//        return -1;
-//      }
+      char filename[FILENAME_MAX];
+      std::cout << "Filename: ";
+      std::cin >> filename;
+
+      std::ifstream file = open_file_for_reading(filename);
+
+      int error_code = load_map_from_file(file, player);
+      if(!error_code) {
+        print_file_errors(error_code);
+        return -1;
+      }
+
+      file.close();
     }break;
     case Placement::Random: {
       if(!create_random_map(player)) {

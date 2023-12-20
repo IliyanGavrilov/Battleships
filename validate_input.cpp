@@ -167,6 +167,5 @@ void print_file_errors(int error_code) {
     case 1: std::cerr << "File with given name does not exist!\n";break;
     case 2: std::cerr << "File is empty!\n";break;
     default: std::cerr << "Error while opening file!\n";break; // case 3
-
   }
 }

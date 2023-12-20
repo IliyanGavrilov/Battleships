@@ -1,7 +1,19 @@
 #include "file_handling.hh"
 
-int load_game_from_file(char *filename, player_t &player1, player_t &player2, SuccessfulHit &eSuccessfulHit, Difficulty &eDifficulty, Randomness &eRandomness) {
+std::ifstream open_file_for_reading(char *filename) {
   std::ifstream file(filename);
+
+  return file;
+}
+
+std::ofstream open_file_for_writing(char * filename) {
+  std::ofstream file(filename);
+
+  return file;
+}
+
+int load_game_from_file(char *filename, player_t &player1, player_t &player2, SuccessfulHit &eSuccessfulHit, Difficulty &eDifficulty, Randomness &eRandomness) {
+  std::ifstream file = open_file_for_reading(filename);
 
   // Check if file exists
   if(file.fail()) {
@@ -51,7 +63,6 @@ int load_game_from_file(char *filename, player_t &player1, player_t &player2, Su
 
     load_player_info_from_file(file, player2);
 
-    // Set player information
     file.close();
   }
     // Error while opening file
@@ -62,7 +73,18 @@ int load_game_from_file(char *filename, player_t &player1, player_t &player2, Su
   return 0;
 }
 
-void load_player_info_from_file(std::ifstream &file, player_t &player) {
+int load_map_from_file(std::ifstream &file, player_t &player) {
+  // Check if file exists
+  if(file.fail()) {
+    return 1;
+  }
+
+  // Check if file is empty
+  if(file.peek() == std::ifstream::traits_type::eof())
+  {
+    return 2;
+  }
+
   std::string line;
 
   // Allocate memory for map
@@ -83,6 +105,15 @@ void load_player_info_from_file(std::ifstream &file, player_t &player) {
       player.map[i][j] = charToTileState(*v[j].c_str());
     }
   }
+
+  return 0;
+}
+
+void load_player_info_from_file(std::ifstream &file, player_t &player) {
+  std::string line;
+
+  // Read player map (matrix) line by line
+  load_map_from_file(file, player);
 
   // Skip empty line before loading player ships
   std::getline(file, line);

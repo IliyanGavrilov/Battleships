@@ -7,6 +7,7 @@
 #include "ship.hh"
 #include "player.hh"
 #include "validate_input.hh"
+#include "file_handling.hh"
 
 #pragma once
 
