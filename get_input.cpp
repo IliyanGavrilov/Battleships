@@ -5,8 +5,8 @@ int get_input() {
   int map_size, iDifficulty, iGameType, total_ships_count, iMode, iRandomness, iSuccessfulHit;
   SuccessfulHit eSuccessfulHit;
   Mode eMode;
-  Difficulty eDifficulty;
-  Randomness eRandomness;
+  Difficulty eDifficulty = Difficulty::Easy;
+  Randomness eRandomness = Randomness::Normal;
 
   std::cout << "New game (1) or load game from file (2)? \n";
   std::cin >> iGameType;
@@ -17,6 +17,7 @@ int get_input() {
     return -1;
   }
 
+  // Load new game
   if(eGameType == GameType::New) {
     std::cout << "Does player repeat his turn (go again) after a successful hit (hitting a ship)? (1, 2) ";
     std::cin >> iSuccessfulHit;
@@ -66,13 +67,15 @@ int get_input() {
     std::cout << "Filename: ";
     std::cin >> filename;
 
-    int error_code = load_game_from_file(filename, player1, player2, eSuccessfulHit, eDifficulty, eRandomness);
+    int error_code = load_game_from_file(FileHandling::All, filename, &player1, &player2,
+                                         &eMode, &eSuccessfulHit, &eDifficulty, &eRandomness);
 
     if(!error_code) {
-      game_loop(player1, player2, eSuccessfulHit, eDifficulty, eRandomness);
+      game_loop(player1, player2, eMode, eSuccessfulHit, eDifficulty, eRandomness);
     }
     else {
       print_file_errors(error_code);
+      return -1;
     }
   }
 

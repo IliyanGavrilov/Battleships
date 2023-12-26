@@ -1,19 +1,8 @@
 #include "file_handling.hh"
 
-std::ifstream open_file_for_reading(char *filename) {
+int load_game_from_file(FileHandling load_type, char *filename, player_t *player1, player_t *player2, Mode *eMode,
+                        SuccessfulHit *eSuccessfulHit, Difficulty *eDifficulty, Randomness *eRandomness) {
   std::ifstream file(filename);
-
-  return file;
-}
-
-std::ofstream open_file_for_writing(char * filename) {
-  std::ofstream file(filename);
-
-  return file;
-}
-
-int load_game_from_file(char *filename, player_t &player1, player_t &player2, SuccessfulHit &eSuccessfulHit, Difficulty &eDifficulty, Randomness &eRandomness) {
-  std::ifstream file = open_file_for_reading(filename);
 
   // Check if file exists
   if(file.fail()) {
@@ -30,38 +19,45 @@ int load_game_from_file(char *filename, player_t &player1, player_t &player2, Su
   if(file.is_open()) {
     std::string line;
 
-    // Get first line containing game settings (a.k.a. map_size, ship_count, enums)
-    std::getline(file, line);
-    const char *str = line.c_str();
-    const char delimiter = ' ';
+    if(load_type == FileHandling::All) {
+      // Get first line containing game settings (a.k.a. map_size, ship_count, enums)
+      std::getline(file, line);
+      const char *str = line.c_str();
 
-    // Split line/string by delimiter
-    std::vector<std::string> result = split_string(str);
-    int index = 0;
+      // Split line/string by delimiter
+      std::vector<std::string> result = split_string(str);
+      int index = 0;
 
-    // Read the game settings from first row, convert them from string to int using stoi() and
-    // Then cast them to enum
-    int map_size = stoi(result[index++]);
-    int total_ships_count = stoi(result[index++]);
-    eSuccessfulHit = static_cast<SuccessfulHit>(stoi(result[index++]));
-    Mode eMode = static_cast<Mode>(stoi(result[index++]));
-    eDifficulty = static_cast<Difficulty>(stoi(result[index++]));
-    eRandomness = static_cast<Randomness>(stoi(result[index]));
+      // Read the game settings from first row, convert them from string to int using stoi() and
+      // Then cast them to enum
+      int map_size = stoi(result[index++]);
+      int total_ships_count = stoi(result[index++]);
+      *eSuccessfulHit = static_cast<SuccessfulHit>(stoi(result[index++]));
+      *eMode = static_cast<Mode>(stoi(result[index++]));
+      *eDifficulty = static_cast<Difficulty>(stoi(result[index++]));
+      *eRandomness = static_cast<Randomness>(stoi(result[index]));
 
-    player1.map_size = map_size;
-    player1.ships_count = total_ships_count;
-    player2.map_size = map_size;
-    player2.ships_count = total_ships_count;
 
-    // Skip empty line before loading Player 1 information (map and ships)
-    std::getline(file, line);
+      (*player1).map_size = map_size;
+      (*player1).ships_count = total_ships_count;
+      (*player2).map_size = map_size;
+      (*player2).ships_count = total_ships_count;
 
-    load_player_info_from_file(file, player1);
+      // Skip empty line before loading Player 1 information (map and ships)
+      std::getline(file, line);
 
-    // Skip empty line before loading Player 2 information (map and ships)
-    std::getline(file, line);
+    }
 
-    load_player_info_from_file(file, player2);
+    // Load Player 1 information
+    load_player_info_from_file(file, *player1);
+
+    if(load_type == FileHandling::All) {
+      // Skip empty line before loading Player 2 information (map and ships)
+      std::getline(file, line);
+
+      // Loading Player 2 information
+      load_player_info_from_file(file, *player2);
+    }
 
     file.close();
   }
@@ -73,18 +69,7 @@ int load_game_from_file(char *filename, player_t &player1, player_t &player2, Su
   return 0;
 }
 
-int load_map_from_file(std::ifstream &file, player_t &player) {
-  // Check if file exists
-  if(file.fail()) {
-    return 1;
-  }
-
-  // Check if file is empty
-  if(file.peek() == std::ifstream::traits_type::eof())
-  {
-    return 2;
-  }
-
+void load_player_info_from_file(std::ifstream &file, player_t &player) {
   std::string line;
 
   // Allocate memory for map
@@ -106,15 +91,6 @@ int load_map_from_file(std::ifstream &file, player_t &player) {
     }
   }
 
-  return 0;
-}
-
-void load_player_info_from_file(std::ifstream &file, player_t &player) {
-  std::string line;
-
-  // Read player map (matrix) line by line
-  load_map_from_file(file, player);
-
   // Skip empty line before loading player ships
   std::getline(file, line);
 
@@ -126,6 +102,66 @@ void load_player_info_from_file(std::ifstream &file, player_t &player) {
     player.ships[i] = ship_t(stoi(v[0]),
                              point_t(stoi(v[1]), stoi(v[2])),
                              point_t(stoi(v[3]), stoi(v[4])));
+  }
+}
+
+int save_game_to_file(FileHandling save_type, char *filename, player_t *player1, player_t *player2, Mode *eMode,
+                      SuccessfulHit *eSuccessfulHit, Difficulty *eDifficulty, Randomness *eRandomness) {
+  std::ofstream file(filename); // TODO
+
+  // Check if file exists
+  if(file.fail()) {
+    return 1;
+  }
+
+  // Check if file opened successfully
+  if(file.is_open()) {
+    std::string line;
+
+    if(save_type == FileHandling::All) {
+      // Save game settings (a.k.a. map_size, ship_count, enums) to the first line
+      file << player1->map_size << " " << player1->ships_count << " " <<
+      eSuccessfulHit << " " << eMode << " " << eDifficulty << " " << eRandomness << "\n";
+
+      // Skip empty line before saving Player 1 information (map and ships)
+      file << "\n";
+    }
+
+    save_player_info_to_file(file, *player1);
+
+    if(save_type == FileHandling::All) {
+      // Skip empty line before saving Player 2 information (map and ships)
+      file << "\n";
+
+      save_player_info_to_file(file, *player2);
+    }
+
+    file.close();
+  }
+    // Error while opening file
+  else {
+    return 3;
+  }
+
+  return 0;
+}
+
+void save_player_info_to_file(std::ofstream &file, player_t &player) {
+  // Save player map (matrix)
+  for(int i = 0; i < player.map_size; i++) {
+    for(int j = 0; j < player.map_size; j++) {
+      file << player.map[i][j] << " ";
+    }
+    file << "\n";
+  }
+
+  // Skip empty line before saving player ships
+  file << "\n";
+
+  // Save player ships
+  for(int i = 0; i < player.ships_count; i++) {
+    file << player.ships[i].size << " " << player.ships[i].end_coords[0].x << " " << player.ships[i].end_coords[0].y << " " <<
+                                           player.ships[i].end_coords[1].x << " " << player.ships[i].end_coords[1].y << "\n";
   }
 }
 

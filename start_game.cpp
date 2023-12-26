@@ -32,7 +32,7 @@ int start_game(ship_t *ships_to_place, int ships_count, int map_size, Successful
   std::cout << "\n";
 
   // Start game
-  game_loop(player1, player2, successfulHit, difficulty, randomness);
+  game_loop(player1, player2, mode, successfulHit, difficulty, randomness);
 
   // Free map memory by calling the players' destructors
   player1.player_t::~player_t();

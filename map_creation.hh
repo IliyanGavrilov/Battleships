@@ -4,6 +4,7 @@
 
 #include "Placement.hh"
 #include "TileState.hh"
+#include "SaveToFile.hh"
 #include "ship.hh"
 #include "player.hh"
 #include "validate_input.hh"

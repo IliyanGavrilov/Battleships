@@ -25,6 +25,7 @@ int create_custom_map(player_t &player) {
     }
     else {
       print_invalid_coords_error_code(error_code);
+      // Not enough space on map to place ship, so we exit the game
       if(error_code == 3) {
         return -1;
       }
@@ -94,26 +95,42 @@ int generate_map(player_t &player, Placement ship_placement) {
       std::cout << "Filename: ";
       std::cin >> filename;
 
-      std::ifstream file = open_file_for_reading(filename);
-
-      int error_code = load_map_from_file(file, player);
+      // Load map and ships into player struct
+      int error_code = load_game_from_file(FileHandling::PlayerInfo, filename, &player);
       if(!error_code) {
         print_file_errors(error_code);
         return -1;
       }
-
-      file.close();
     }break;
     case Placement::Random: {
+      std::cout << "Generating random map. Please wait . . .\n";
       if(!create_random_map(player)) {
         return -1;
       }
     }break;
+  }
+  // TODO ask player to save map to file
+  player.print_map();
 
-    // TODO ask player to save map to file
+  int iSaveToFile;
+  std::cout << "Do you want to save this map to a file? (1, 2)";
+  std::cin >> iSaveToFile;
+  SaveToFile eSaveToFile = static_cast<SaveToFile>(iSaveToFile);
+
+  char filename[FILENAME_MAX];
+  std::cout << "Filename: ";
+  std::cin >> filename;
+
+  // Write map to file
+  if(eSaveToFile == SaveToFile::Save) {
+    int error_code = save_game_to_file(FileHandling::PlayerInfo, filename, &player);
+    if(!error_code) {
+      print_file_errors(error_code);
+      return -1;
+    }
   }
 
-  // print_map(map, size); // TODO TEMP
+  // TODO TEMP
   // Clear terminal so other player doesn't see coordinates entered
   // system("@cls||clear");;
 

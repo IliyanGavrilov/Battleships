@@ -1,7 +1,7 @@
 #pragma once
 #include <fstream>
-#include <string> // TODO
-#include <vector> // TODO
+#include <string>
+#include <vector>
 
 #include "SuccessfulHit.hh"
 #include "Mode.hh"
@@ -10,15 +10,16 @@
 #include "TileState.hh"
 #include "ship.hh"
 #include "player.hh"
+#include "FileHandling.hh"
 
-std::ifstream open_file_for_reading(char *filename);
-
-std::ofstream open_file_for_writing(char * filename);
-
-int load_game_from_file(char *filename, player_t &player1, player_t &player2, SuccessfulHit &eSuccessfulHit, Difficulty &eDifficulty, Randomness &eRandomness);
-
-int load_map_from_file(std::ifstream &file, player_t &player);
+int load_game_from_file(FileHandling load_type, char *filename, player_t *player1, player_t *player2 = nullptr, Mode *eMode = nullptr,
+                        SuccessfulHit *eSuccessfulHit = nullptr, Difficulty *eDifficulty = nullptr, Randomness *eRandomness = nullptr);
 
 void load_player_info_from_file(std::ifstream &file, player_t &player);
+
+int save_game_to_file(FileHandling save_type, char *filename, player_t *player1, player_t *player2 = nullptr, Mode *eMode = nullptr,
+                      SuccessfulHit *eSuccessfulHit = nullptr, Difficulty *eDifficulty = nullptr, Randomness *eRandomness = nullptr);
+
+void save_player_info_to_file(std::ofstream &file, player_t &player);
 
 std::vector<std::string> split_string(const char *str, char delimiter = ' ');

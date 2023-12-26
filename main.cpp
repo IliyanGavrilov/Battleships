@@ -5,7 +5,9 @@ int main() {
 }
 // TODO "const" (TileState ** const map, const int size, const ship_t end_points)
 // TODO space between for () if () while () etc.
-// TODO Continue game (load game from file)
 // TODO Repeat turn after hitting a ship
-// TODO Load map from file
 // TODO Custom amount of ships - if player can't fit any more of this type of ships end inputting
+// TODO Save game to file
+// TODO Save map to file
+// TODO make player wait until random generates map with any amount of ships that can fit on it
+// TODO Fix passing whole player struct instead of separate parameters
