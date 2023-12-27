@@ -88,7 +88,7 @@ int validate_ship_coords(TileState **map, int map_size, int ship_size, point_t p
       }
     }
   }
-    // Horizontal ship (y1 == y2)
+  // Horizontal ship (y1 == y2)
   else {
     // Coordinates don't correspond to size  a.k.a. coordinates can't fit ship perfectly
     if(p2.x - p1.x + 1 != ship_size) {
@@ -151,6 +151,21 @@ bool can_ship_fit_on_map(TileState **map, int map_size, int ship_size) {
   return false;
 }
 
+int validate_shot_coords(player_t *player, point_t shot) {
+  // Coordinates are outside of map
+  if(shot.x < 0 || shot.x >= player->map_size || shot.y < 0 || shot.y >= player->map_size) {
+    return 1;
+  }
+
+  // Already hit tile
+  if(player->map[shot.x][shot.y] == TileState::Hit || player->map[shot.x][shot.y] == TileState::Miss ||
+     player->map[shot.x][shot.y] == TileState::Sunken) {
+    return 6;
+  }
+
+  return 0;
+}
+
 void print_invalid_coords_error_code(int error_code) {
   std::cerr << "Invalid coordinates - ";
   switch(error_code) {
@@ -158,7 +173,8 @@ void print_invalid_coords_error_code(int error_code) {
     case 2: std::cerr << "Coordinates not lying on same row/column!\n";break;
     case 3: std::cerr << "Ship cannot fit anywhere on the map! Add less ships next time! Exiting game!\n";break;
     case 4: std::cerr << "Coordinates do not match ship size!\n";break;
-    default: std::cerr << "There is a ship lying between the given points!\n";break; // case 5
+    case 5: std::cerr << "There is a ship lying between the given points!\n";break;
+    default: std::cerr << "You have already hit that tile! Please choose another point!\n";break; // case 6
   }
 }
 

@@ -14,4 +14,8 @@ struct player_t {
   player_t(int, ship_t *, int);
   ~player_t();
   void print_map();
+  ship_t *get_hit_ship(point_t shot);
+  bool shoot_at(point_t shot);
+  point_t *get_unhit_ship_coords();
+  int get_ship_coords_count();
 };
