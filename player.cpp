@@ -117,8 +117,12 @@ point_t *player_t::get_unhit_ship_coords() {
 int player_t::get_ship_coords_count() {
   int count = 0;
 
-  for(int i = 0; i < ships_count; i++) {
-    count += ships[i].size;
+  for(int i = 0; i < map_size; i++) {
+    for(int j = 0; j < map_size; j++) {
+      if(map[i][j] == TileState::Unhit) {
+        count++;
+      }
+    }
   }
 
   return count;
