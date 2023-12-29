@@ -138,18 +138,11 @@ int generate_map(player_t &player, Placement ship_placement) {
 }
 
 void set_ship_coords_on_map(TileState **map, ship_t ship) {
-  point_t p1 = ship.end_coords[0], p2 = ship.end_coords[1];
+  point_t start = ship.end_coords[0], end = ship.end_coords[1];
 
-  // Vertical ship
-  if(p1.x == p2.x) {
-    for(int i = p1.y; i <= p2.y; i++) {
-      map[i][p1.x] = TileState::Unhit;
-    }
-  }
-    // Horizontal ship (y1 == y2)
-  else {
-    for(int i = p1.x; i <= p2.x; i++) {
-      map[p1.y][i] = TileState::Unhit;
+  for (int i = start.x; i <= end.x; ++i) {
+    for (int j = start.y; j <= end.y; ++j) {
+      map[i][j] = TileState::Unhit;
     }
   }
 }

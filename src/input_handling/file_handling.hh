@@ -3,14 +3,14 @@
 #include <string>
 #include <vector>
 
-#include "SuccessfulHit.hh"
-#include "Mode.hh"
-#include "Difficulty.hh"
-#include "Randomness.hh"
-#include "TileState.hh"
-#include "ship.hh"
-#include "player.hh"
-#include "FileHandling.hh"
+#include "../enums/SuccessfulHit.hh"
+#include "../enums/Mode.hh"
+#include "../enums/Difficulty.hh"
+#include "../enums/Randomness.hh"
+#include "../enums/TileState.hh"
+#include "../structs/ship.hh"
+#include "../structs/player.hh"
+#include "../enums/FileHandling.hh"
 
 int load_game_from_file(FileHandling load_type, char *filename, player_t *player1, player_t *player2 = nullptr, Mode *eMode = nullptr,
                         SuccessfulHit *eSuccessfulHit = nullptr, Difficulty *eDifficulty = nullptr, Randomness *eRandomness = nullptr);

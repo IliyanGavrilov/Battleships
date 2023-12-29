@@ -1,6 +1,7 @@
 #include <iostream>
 #include "ship.hh"
-#include "TileState.hh"
+#include "../enums/TileState.hh"
+#include "../enums/BoatTypes.hh"
 
 #pragma once
 
@@ -18,4 +19,5 @@ struct player_t {
   bool shoot_at(point_t shot);
   point_t *get_unhit_ship_coords();
   int get_ship_coords_count();
+  int get_smallest_ship_size();
 };

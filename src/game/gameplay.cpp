@@ -1,14 +1,37 @@
 #include "gameplay.hh"
 
+bool check_win(player_t *p1, player_t *p2) {
+  if(p2->get_ship_coords_count() <= 0) {
+    std::cout << "Player 1 wins!\n";
+    return true;
+  }
+  if(p1->get_ship_coords_count() <= 0) {
+    std::cout << "Player 2 wins!\n";
+    return true;
+  }
+
+  return false;
+}
+
 void game_loop(player_t p1, player_t p2, Mode mode, SuccessfulHit successfulHit, Difficulty difficulty, Randomness randomness) {
-  while(1) {
+  while(true) {
     // TODO Ask to save game
 
     while(play_turn(&p2) && successfulHit == SuccessfulHit::RepeatTurn);
+
+    if(check_win(&p1, &p2)) {
+      break;
+    }
+
     if (mode == Mode::Singleplayer) {
       while(play_turn(&p1, &difficulty, &randomness) && successfulHit == SuccessfulHit::RepeatTurn);
-    } else {
+    }
+    else {
       while(play_turn(&p1) && successfulHit == SuccessfulHit::RepeatTurn);
+    }
+
+    if(check_win(&p1, &p2)) {
+      break;
     }
   }
 }
@@ -46,6 +69,11 @@ bool play_turn(player_t *opponent, Difficulty *difficulty, Randomness *randomnes
   successful_last_shot = return_val;
 
   opponent->print_map();
+
+  // End game if all ships have been hit
+  if(return_val && opponent->get_ship_coords_count() == 0) {
+    return false;
+  }
 
   return return_val;
 }
@@ -112,7 +140,7 @@ point_t get_shot_from_easy_or_hard_bot(player_t *opponent, Randomness *randomnes
         shot = get_random_coords_for_shot(opponent);
       }
       else {
-        // TODO
+        shot = get_parity_shot(opponent);
       }
     }
   }
@@ -121,7 +149,7 @@ point_t get_shot_from_easy_or_hard_bot(player_t *opponent, Randomness *randomnes
       shot = get_random_coords_for_shot(opponent);
     }
     else {
-      // TODO
+      shot = get_parity_shot(opponent);
     }
   }
 
@@ -139,6 +167,27 @@ point_t get_random_coords_for_shot(player_t *opponent) {
 
     error_code = validate_shot_coords(opponent, shot);
   } while (error_code);
+
+  return shot;
+}
+
+point_t get_parity_shot(player_t *opponent) {
+  point_t shot;
+  bool flag = false;
+  int smallestShipSize = opponent->get_smallest_ship_size();
+
+  for (int x = 0; x < opponent->map_size; x += 1) {
+    for (int y = x % smallestShipSize; y < opponent->map_size; y += smallestShipSize) {
+      if(opponent->map[x][y] == TileState::Water) {
+        shot = point_t(x, y);
+        flag = true;
+        break;
+      }
+    }
+    if(flag) {
+      break;
+    }
+  }
 
   return shot;
 }

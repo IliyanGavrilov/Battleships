@@ -74,30 +74,16 @@ int validate_ship_coords(TileState **map, int map_size, int ship_size, point_t p
     return 3;
   }
 
-  // Vertical ship
-  if(p1.x == p2.x) {
-    // Coordinates don't correspond to size a.k.a. coordinates can't fit ship perfectly
-    if(p2.y - p1.y + 1 != ship_size) {
-      return 4;
-    }
-
-    // Another ship between given points
-    for(int i = p1.y; i <= p2.y; i++) {
-      if(map[i][p1.x] != TileState::Water) {
-        return 5;
-      }
-    }
+  // Coordinates don't correspond to size a.k.a. coordinates can't fit ship perfectly
+  // Horizontal OR vertical cases
+  if((p1.x == p2.x && p2.y - p1.y + 1 != ship_size) || (p1.y == p2.y && p2.x - p1.x + 1 != ship_size)) {
+    return 4;
   }
-  // Horizontal ship (y1 == y2)
-  else {
-    // Coordinates don't correspond to size  a.k.a. coordinates can't fit ship perfectly
-    if(p2.x - p1.x + 1 != ship_size) {
-      return 4;
-    }
 
-    // Another ship between given points
-    for(int i = p1.x; i <= p2.x; i++) {
-      if(map[p1.y][i] != TileState::Water) {
+  // Another ship between given points
+  for (int i = p1.x; i <= p2.x; ++i) {
+    for (int j = p1.y; j <= p2.y; ++j) {
+      if(map[i][j] != TileState::Water) {
         return 5;
       }
     }

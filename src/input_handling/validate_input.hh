@@ -1,14 +1,14 @@
 #include <iostream>
 
-#include "GameType.hh"
-#include "SuccessfulHit.hh"
-#include "Mode.hh"
-#include "Difficulty.hh"
-#include "Randomness.hh"
-#include "Placement.hh"
-#include "TileState.hh"
-#include "point.hh"
-#include "player.hh"
+#include "../enums/GameType.hh"
+#include "../enums/SuccessfulHit.hh"
+#include "../enums/Mode.hh"
+#include "../enums/Difficulty.hh"
+#include "../enums/Randomness.hh"
+#include "../enums/Placement.hh"
+#include "../enums/TileState.hh"
+#include "../structs/point.hh"
+#include "../structs/player.hh"
 
 #define MIN_SIZE 5
 #define MAX_SIZE 20

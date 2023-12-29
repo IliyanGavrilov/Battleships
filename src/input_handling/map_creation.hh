@@ -2,11 +2,11 @@
 #include <ctime> // for random
 // #include <cstdlib> // for random // TODO fix
 
-#include "Placement.hh"
-#include "TileState.hh"
-#include "SaveToFile.hh"
-#include "ship.hh"
-#include "player.hh"
+#include "../enums/Placement.hh"
+#include "../enums/TileState.hh"
+#include "../enums/SaveToFile.hh"
+#include "../structs/ship.hh"
+#include "../structs/player.hh"
 #include "validate_input.hh"
 #include "file_handling.hh"
 
