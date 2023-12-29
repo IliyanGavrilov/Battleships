@@ -131,6 +131,17 @@ int player_t::get_smallest_ship_size() {
   int min = BoatTypes::Carrier;
 
   for(int i = 0; i < ships_count; i++) {
+    point_t start = ships[i].end_coords[0], end = ships[i].end_coords[1];
+
+    // Get ships that are still not sunk
+    for (int j = start.x; j <= end.x; j++) {
+      for (int l = start.y; l <= end.y; ++l) {
+        if(map[j][l] == TileState::Sunken) {
+          continue;
+        }
+      }
+    }
+
     if(ships[i].size < min) {
       min = ships[i].size;
     }

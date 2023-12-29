@@ -171,6 +171,7 @@ point_t get_random_coords_for_shot(player_t *opponent) {
   return shot;
 }
 
+// Shoot every n tiles instead of randomly (where n is the size of the smallest ship that is still unhit)
 point_t get_parity_shot(player_t *opponent) {
   point_t shot;
   bool flag = false;
