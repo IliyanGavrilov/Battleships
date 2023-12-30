@@ -134,7 +134,7 @@ point_t get_shot_coords(player_t *opponent, Difficulty *difficulty, Randomness *
     do {
       std::cout << "Shoot at (x, y): ";
       std::cin >> shot.x >> shot.y;
-      error_code = validate_shot_coords(opponent, shot);
+      error_code = validate_shot_coords(opponent, shot, true);
       if(!error_code) {
         print_invalid_coords_error_code(error_code);
       }
@@ -183,7 +183,7 @@ point_t get_random_coords_for_shot(player_t *opponent) {
     int y = rand() % opponent->map_size;
     shot = point_t(x, y);
 
-    error_code = validate_shot_coords(opponent, shot);
+    error_code = validate_shot_coords(opponent, shot, true);
   } while (error_code);
 
   return shot;
@@ -217,7 +217,7 @@ point_t get_random_ship_tile_coords(player_t *opponent, point_t *all_unhit_ship_
 
   do {
     shot = all_unhit_ship_coords[rand() % opponent->get_ship_coords_count(TileState::Unhit)];
-    error_code = validate_shot_coords(opponent, shot);
+    error_code = validate_shot_coords(opponent, shot, true);
   } while(error_code);
 
   return shot;
@@ -249,31 +249,16 @@ point_t sink_found_ships(player_t *opponent) {
     int newX = unhit_tile.x + dx[i];
     int newY = unhit_tile.y + dy[i];
 
-    while (newX >= 0 && newX < opponent->map_size && newY >= 0 && newY < opponent->map_size &&
-           opponent->map[newX][newY] == TileState::Hit) {
-      if (opponent->map[newX][newY] == TileState::Unhit) {
+    // Stop going that direction and try next one if the tile is sunken or missed or out of map
+    while (!validate_shot_coords(opponent, point_t(newX, newY), false)) {
+      // Shoot if space is available
+      if (opponent->map[newX][newY] == TileState::Unhit || opponent->map[newX][newY] == TileState::Water) {
         return {newX, newY};
-      }
-      else if(opponent->map[newX][newY] == TileState::Miss) {
-        break;
       }
 
       newX += dx[i];
       newY += dy[i];
     }
-
-
-
-
-    // Stop going that direction and try next one if the tile is a miss
-    if(opponent->map[unhit_tile.x + dx[i]][unhit_tile.y + dy[i]] == TileState::Miss) {
-      continue;
-    }
-    // Continue going iterating in direction if hit
-    else if(opponent->map[unhit_tile.x + dx[i]][unhit_tile.y + dy[i]] == TileState::Hit) {
-
-    }
-    //
   }
 
   return shot;

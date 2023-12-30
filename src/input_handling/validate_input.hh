@@ -27,7 +27,7 @@ int validate_ship_coords(TileState **map, int map_size, int ship_size, point_t p
 
 bool can_ship_fit_on_map(TileState **map, int map_size, int ship_size);
 
-int validate_shot_coords(player_t *player, point_t shot);
+int validate_shot_coords(player_t *player, point_t shot, bool flag);
 
 void print_invalid_coords_error_code(int error_code);
 

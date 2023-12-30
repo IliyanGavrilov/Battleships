@@ -137,14 +137,16 @@ bool can_ship_fit_on_map(TileState **map, int map_size, int ship_size) {
   return false;
 }
 
-int validate_shot_coords(player_t *player, point_t shot) {
+// Flag is used in the bot's sinking the hit ship logic so that the
+// loop continues when the tile is hit
+int validate_shot_coords(player_t *player, point_t shot, bool flag) {
   // Coordinates are outside of map
   if(shot.x < 0 || shot.x >= player->map_size || shot.y < 0 || shot.y >= player->map_size) {
     return 1;
   }
 
   // Already hit tile
-  if(player->map[shot.x][shot.y] == TileState::Hit || player->map[shot.x][shot.y] == TileState::Miss ||
+  if((player->map[shot.x][shot.y] == TileState::Hit && flag) || player->map[shot.x][shot.y] == TileState::Miss ||
      player->map[shot.x][shot.y] == TileState::Sunken) {
     return 6;
   }
