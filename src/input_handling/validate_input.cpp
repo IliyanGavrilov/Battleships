@@ -81,8 +81,8 @@ int validate_ship_coords(TileState **map, int map_size, int ship_size, point_t p
   }
 
   // Another ship between given points
-  for (int i = p1.x; i <= p2.x; ++i) {
-    for (int j = p1.y; j <= p2.y; ++j) {
+  for (int i = p1.x; i <= p2.x; i++) {
+    for (int j = p1.y; j <= p2.y; j++) {
       if(map[i][j] != TileState::Water) {
         return 5;
       }

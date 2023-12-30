@@ -67,8 +67,8 @@ bool player_t::shoot_at(point_t shot) {
       point_t start = hit_ship.end_coords[0], end = hit_ship.end_coords[1];
 
       // Count how many ship tiles have been hit
-      for (int i = start.x; i <= end.x; ++i) {
-        for (int j = start.y; j <= end.y; ++j) {
+      for (int i = start.x; i <= end.x; i++) {
+        for (int j = start.y; j <= end.y; j++) {
           if(map[i][j] == TileState::Hit) {
             hit_ship_tiles_count++;
           }
@@ -78,8 +78,8 @@ bool player_t::shoot_at(point_t shot) {
       // Check if ship is fully sunken or just hit
       if(hit_ship_tiles_count == 0) {
         // Set ship as sunken and print ship type
-        for (int i = start.x; i <= end.x; ++i) {
-          for (int j = start.y; j <= end.y; ++j) {
+        for (int i = start.x; i <= end.x; i++) {
+          for (int j = start.y; j <= end.y; j++) {
             map[i][j] = TileState::Sunken;
           }
         }
@@ -98,7 +98,7 @@ bool player_t::shoot_at(point_t shot) {
 }
 
 point_t *player_t::get_unhit_ship_coords() {
-  point_t *ship_coords = new point_t[get_ship_coords_count()];
+  point_t *ship_coords = new point_t[get_ship_coords_count(TileState::Unhit)];
   int l = 0;
 
   for(int i = 0; i < map_size; i++) {
@@ -113,12 +113,13 @@ point_t *player_t::get_unhit_ship_coords() {
   return ship_coords;
 }
 
-int player_t::get_ship_coords_count() {
+int player_t::get_ship_coords_count(TileState ship_state) {
   int count = 0;
 
   for(int i = 0; i < map_size; i++) {
     for(int j = 0; j < map_size; j++) {
-      if(map[i][j] == TileState::Unhit) {
+      // Hit or Unhit ships
+      if(map[i][j] == ship_state) {
         count++;
       }
     }
@@ -135,7 +136,7 @@ int player_t::get_smallest_ship_size() {
 
     // Get ships that are still not sunk
     for (int j = start.x; j <= end.x; j++) {
-      for (int l = start.y; l <= end.y; ++l) {
+      for (int l = start.y; l <= end.y; l++) {
         if(map[j][l] == TileState::Sunken) {
           continue;
         }

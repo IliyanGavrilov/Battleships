@@ -18,6 +18,6 @@ struct player_t {
   ship_t *get_hit_ship(point_t shot);
   bool shoot_at(point_t shot);
   point_t *get_unhit_ship_coords();
-  int get_ship_coords_count();
+  int get_ship_coords_count(TileState ship_state);
   int get_smallest_ship_size();
 };

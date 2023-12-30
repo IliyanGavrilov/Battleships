@@ -1,6 +1,6 @@
 #include <iostream>
 #include <ctime> // for random
-// #include <cstdlib> // for random // TODO fix
+#include <cstdlib> // for random
 
 #include "../enums/Placement.hh"
 #include "../enums/TileState.hh"

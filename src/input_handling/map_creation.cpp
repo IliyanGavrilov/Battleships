@@ -109,7 +109,8 @@ int generate_map(player_t &player, Placement ship_placement) {
       }
     }break;
   }
-  // TODO ask player to save map to file
+
+  // Saving map to file
   player.print_map();
 
   int iSaveToFile;
@@ -117,12 +118,12 @@ int generate_map(player_t &player, Placement ship_placement) {
   std::cin >> iSaveToFile;
   SaveToFile eSaveToFile = static_cast<SaveToFile>(iSaveToFile);
 
-  char filename[FILENAME_MAX];
-  std::cout << "Filename: ";
-  std::cin >> filename;
-
   // Write map to file
   if(eSaveToFile == SaveToFile::Save) {
+    char filename[FILENAME_MAX];
+    std::cout << "Filename: ";
+    std::cin >> filename;
+
     int error_code = save_game_to_file(FileHandling::PlayerInfo, filename, &player);
     if(!error_code) {
       print_file_errors(error_code);
@@ -140,8 +141,8 @@ int generate_map(player_t &player, Placement ship_placement) {
 void set_ship_coords_on_map(TileState **map, ship_t ship) {
   point_t start = ship.end_coords[0], end = ship.end_coords[1];
 
-  for (int i = start.x; i <= end.x; ++i) {
-    for (int j = start.y; j <= end.y; ++j) {
+  for (int i = start.x; i <= end.x; i++) {
+    for (int j = start.y; j <= end.y; j++) {
       map[i][j] = TileState::Unhit;
     }
   }
