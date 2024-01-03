@@ -4,6 +4,11 @@
 # Editor-based HTTP Client requests
 /httpRequests/
 
+misc.xml
+modules.xml
+vcs.xml
+workspace.xml
+battleships.iml
 .name
 /.idea/
 /cmake-build-debug/
