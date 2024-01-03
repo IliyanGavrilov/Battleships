@@ -1,13 +1,15 @@
+#include <limits>
 #include "../enums/Mode.hh"
 #include "../enums/SuccessfulHit.hh"
 #include "../enums/Difficulty.hh"
 #include "../enums/Randomness.hh"
 #include "../enums/TileState.hh"
 #include "../structs/player.hh"
-#include "../input_handling/validate_input.hh"
+#include "../user_input_output/validate_input.hh"
 #include "../enums/SaveToFile.hh"
 #include "../enums/FileHandling.hh"
-#include "../input_handling/file_handling.hh"
+#include "../user_input_output/file_handling.hh"
+#include "../user_input_output/output_printing.hh"
 
 #define DIRECTIONS_COUNT 4
 
@@ -15,9 +17,9 @@
 
 bool check_win(player_t *p1, player_t *p2);
 
-int game_loop(player_t p1, player_t p2, Mode mode, SuccessfulHit successfulHit, Difficulty difficulty, Randomness randomness);
+void game_loop(player_t p1, player_t p2, Mode mode, SuccessfulHit successfulHit, Difficulty *difficulty, Randomness *randomness);
 
-bool play_turn(player_t *opponent, Difficulty *difficulty = nullptr, Randomness *randomness = nullptr);
+bool play_turn(player_t &opponent, Difficulty *difficulty = nullptr, Randomness *randomness = nullptr);
 
 point_t get_shot_coords(player_t *opponent, Difficulty *difficulty, Randomness *randomness, int chance_to_cheat);
 

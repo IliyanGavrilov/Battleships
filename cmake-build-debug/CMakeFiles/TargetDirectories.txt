@@ -1,0 +1,3 @@
+C:/D/programming/kurs1/battleships/cmake-build-debug/CMakeFiles/battleships.dir
+C:/D/programming/kurs1/battleships/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/D/programming/kurs1/battleships/cmake-build-debug/CMakeFiles/rebuild_cache.dir

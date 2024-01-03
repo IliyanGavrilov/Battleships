@@ -15,7 +15,7 @@
 int load_game_from_file(FileHandling load_type, char *filename, player_t *player1, player_t *player2 = nullptr, Mode *eMode = nullptr,
                         SuccessfulHit *eSuccessfulHit = nullptr, Difficulty *eDifficulty = nullptr, Randomness *eRandomness = nullptr);
 
-void load_player_info_from_file(std::ifstream &file, player_t &player);
+int load_player_info_from_file(FileHandling load_type, std::ifstream &file, player_t &player);
 
 int save_game_to_file(FileHandling save_type, char *filename, player_t *player1, player_t *player2 = nullptr, Mode *eMode = nullptr,
                       SuccessfulHit *eSuccessfulHit = nullptr, Difficulty *eDifficulty = nullptr, Randomness *eRandomness = nullptr);

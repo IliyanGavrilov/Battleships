@@ -1,11 +1,11 @@
 #include "gameplay.hh"
 
 bool check_win(player_t *p1, player_t *p2) {
-  if(p2->get_ship_coords_count(TileState::Unhit) <= 0) {
+  if (p2->ships_count <= 0) {
     std::cout << "Player 1 wins!\n";
     return true;
   }
-  if(p1->get_ship_coords_count(TileState::Unhit) <= 0) {
+  if (p1->ships_count <= 0) {
     std::cout << "Player 2 wins!\n";
     return true;
   }
@@ -13,69 +13,86 @@ bool check_win(player_t *p1, player_t *p2) {
   return false;
 }
 
-int game_loop(player_t p1, player_t p2, Mode mode, SuccessfulHit successfulHit, Difficulty difficulty, Randomness randomness) {
-  while(true) {
-    // Player 1's turn
-    while(play_turn(&p2) && successfulHit == SuccessfulHit::RepeatTurn);
+void game_loop(player_t p1, player_t p2, Mode mode, SuccessfulHit successfulHit, Difficulty *difficulty, Randomness *randomness) {
+  if (mode == Mode::Multiplayer) {
+    difficulty = nullptr;
+    randomness = nullptr;
+  }
 
-    if(check_win(&p1, &p2)) {
+  while (true) {
+    // Player 1's turn
+    do {
+      // clear_screen();
+      std::cout << "Player 1's turn:\n";
+
+      // If player hit a ship AND option is on then player repeats his turn
+    } while (play_turn(p2, difficulty, randomness) && successfulHit == SuccessfulHit::RepeatTurn);
+
+
+    if (check_win(&p1, &p2)) {
       break;
     }
 
     // Player 2's turn
-    if (mode == Mode::Singleplayer) {
-      while(play_turn(&p1, &difficulty, &randomness) && successfulHit == SuccessfulHit::RepeatTurn);
-    }
-    else {
-      while(play_turn(&p1) && successfulHit == SuccessfulHit::RepeatTurn);
-    }
+    do {
+      // clear_screen();
+      std::cout << "Player 2's turn:\n";
 
-    if(check_win(&p1, &p2)) {
+      // If player hit a ship AND option is on then player repeats his turn
+    } while (play_turn(p1, difficulty, randomness) && successfulHit == SuccessfulHit::RepeatTurn);
+
+    if (check_win(&p1, &p2)) {
       break;
     }
 
     // Ask to save game
     int iSaveToFile;
-    std::cout << "Do you want to save the correct game state to a file? (1, 2)";
+    std::cout << "Do you want to save the current game state to a file?\n1. Yes\n2. No\n";
     std::cin >> iSaveToFile;
     SaveToFile eSaveToFile = static_cast<SaveToFile>(iSaveToFile);
 
     // Write map to file
-    if(eSaveToFile == SaveToFile::Save) {
-      char filename[FILENAME_MAX];
-      std::cout << "Filename: ";
-      std::cin >> filename;
+    if (eSaveToFile == SaveToFile::Save) {
+      while (true) {
+        char filename[FILENAME_MAX];
+        std::cout << "Filename: ";
+        std::cin >> filename;
 
-      int error_code = save_game_to_file(FileHandling::All, filename, &p1, &p2, &mode,
-                                         &successfulHit, &difficulty, &randomness);
-      if(!error_code) {
-        print_file_errors(error_code);
-        return -1;
+        int error_code = save_game_to_file(FileHandling::All, filename, &p1, &p2, &mode,
+                                           &successfulHit, difficulty, randomness);
+        if (error_code) {
+          print_file_errors(error_code);
+        } else {
+          std::cout << "Saved game state to file successfully!\n";
+          return;
+        }
       }
     }
   }
-
-  return 0;
 }
 
 // Returns true upon a successful ship hit
-bool play_turn(player_t *opponent, Difficulty *difficulty, Randomness *randomness) {
+bool play_turn(player_t &opponent, Difficulty *difficulty, Randomness *randomness) {
   bool return_val;
 
   // Formula: (rand() % (ub - lb + 1)) + lb
   // 10% chance for bot to *cheat* and hit ship directly (increases by 15% each time it misses a ship)
   static int chance_to_cheat = 10;
 
-  opponent->print_map();
+  std::vector<std::vector<TileState>> map_before = opponent.map;
+  print_map(opponent.map, opponent.map_size, true);
+  print_ship_sizes_left(opponent.ships);
 
   // Make a move
-  point_t shot = get_shot_coords(opponent, difficulty, randomness, chance_to_cheat);
+  point_t shot = get_shot_coords(&opponent, difficulty, randomness, chance_to_cheat);
+
+  clear_screen();
 
   // Update board and if shot hit or missed
-  return_val = opponent->shoot_at(shot);
+  return_val = opponent.shoot_at(shot);
 
   // Increase or reset chance to cheat
-  if(*randomness == Randomness::Rigged) {
+  if (randomness != nullptr && *randomness == Randomness::Rigged) {
     // If shot missed increase chance by 15%
     if (!return_val) {
       chance_to_cheat += 15;
@@ -86,10 +103,11 @@ bool play_turn(player_t *opponent, Difficulty *difficulty, Randomness *randomnes
     }
   }
 
-  opponent->print_map();
+  print_map(map_before, opponent.map_size, true, &opponent.map);
+  print_ship_sizes_left(opponent.ships);
 
   // End game if all ships have been hit
-  if(return_val && opponent->get_ship_coords_count(TileState::Unhit) == 0) {
+  if (return_val && opponent.get_ship_coords_count(TileState::Unhit) == 0) {
     return false;
   }
 
@@ -100,28 +118,28 @@ point_t get_shot_coords(player_t *opponent, Difficulty *difficulty, Randomness *
   point_t shot;
 
   // Bot move
-  if(difficulty != nullptr && randomness != nullptr) {
-    switch(*difficulty) {
-      case Easy: { // Random shot
+  if (difficulty != nullptr && randomness != nullptr) {
+    switch (*difficulty) {
+      case Difficulty::Easy: { // Random shot
         shot = get_shot_from_easy_or_hard_bot(opponent, randomness, difficulty, chance_to_cheat);
       }break;
-      case Medium: { // If last shot was hit then try sinking the ship fully, otherwise random shot
-        if(opponent->get_ship_coords_count(TileState::Hit) > 0) {
+      case Difficulty::Medium: { // If last shot was hit then try sinking the ship fully, otherwise random shot
+        if (opponent->get_ship_coords_count(TileState::Hit) > 0) {
           shot = sink_found_ships(opponent);
         }
         else {
           shot = get_shot_from_easy_or_hard_bot(opponent, randomness, difficulty, chance_to_cheat);
         }
       }break;
-      case Hard: { // Medium bot, but instead of random shot it shoots every n tiles (n is the smallest ship size left)
-        if(opponent->get_ship_coords_count(TileState::Hit) > 0) {
+      case Difficulty::Hard: { // Medium bot, but instead of random shot it shoots every n tiles (n is the smallest ship size left)
+        if (opponent->get_ship_coords_count(TileState::Hit) > 0) {
           shot = sink_found_ships(opponent);
         }
         else {
-          get_shot_from_easy_or_hard_bot(opponent, randomness, difficulty, chance_to_cheat);
+          shot = get_shot_from_easy_or_hard_bot(opponent, randomness, difficulty, chance_to_cheat);
         }
       }break;
-      case Impossible: { // Cheats every shot
+      case Difficulty::Impossible: { // Cheats every shot
         point_t *all_unhit_ship_coords = opponent->get_unhit_ship_coords();
         shot = get_random_ship_tile_coords(opponent, all_unhit_ship_coords);
       }break;
@@ -132,10 +150,21 @@ point_t get_shot_coords(player_t *opponent, Difficulty *difficulty, Randomness *
     int error_code;
 
     do {
-      std::cout << "Shoot at (x, y): ";
-      std::cin >> shot.x >> shot.y;
+      char y;
+      std::cout << "Shoot at (letter, number): [1, " << opponent->map_size << "]\n";
+      std::cin >> y >> shot.x;
+
+      if (std::cin.fail()) {
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+      }
+
+      // Fix coords to start from 0 and letters to numbers
+      shot.y = to_lower(y) - 'a';
+      shot.x--;
+
       error_code = validate_shot_coords(opponent, shot, true);
-      if(!error_code) {
+      if (error_code) {
         print_invalid_coords_error_code(error_code);
       }
     } while (error_code);
@@ -147,14 +176,14 @@ point_t get_shot_coords(player_t *opponent, Difficulty *difficulty, Randomness *
 point_t get_shot_from_easy_or_hard_bot(player_t *opponent, Randomness *randomness, Difficulty *difficulty, int chance_to_cheat) {
   point_t shot;
 
-  if(*randomness == Randomness::Rigged) {
+  if (*randomness == Randomness::Rigged) {
     point_t *all_ship_coords = opponent->get_unhit_ship_coords();
 
-    if(rand() % 100 < chance_to_cheat) { // Random ship coordinate (cheat)
+    if (rand() % 100 < chance_to_cheat) { // Random ship coordinate (cheat)
       shot = get_random_ship_tile_coords(opponent, all_ship_coords);
     }
     else { // Random shot (EASY & MEDIUM) or every n tile shot (HARD)
-      if(*difficulty != Difficulty::Hard) {
+      if (*difficulty != Difficulty::Hard) {
         shot = get_random_coords_for_shot(opponent);
       }
       else {
@@ -163,7 +192,7 @@ point_t get_shot_from_easy_or_hard_bot(player_t *opponent, Randomness *randomnes
     }
   }
   else { // Random shot (EASY & MEDIUM) or every n tile shot (HARD)
-    if(*difficulty != Difficulty::Hard) {
+    if (*difficulty != Difficulty::Hard) {
       shot = get_random_coords_for_shot(opponent);
     }
     else {
@@ -195,15 +224,15 @@ point_t get_parity_shot(player_t *opponent) {
   bool found = false;
   int smallestShipSize = opponent->get_smallest_ship_size();
 
-  for (int x = 0; x < opponent->map_size; x += 1) {
+  for (int x = 0; x < opponent->map_size; x++) {
     for (int y = x % smallestShipSize; y < opponent->map_size; y += smallestShipSize) {
-      if(opponent->map[x][y] == TileState::Water) {
+      if (!validate_shot_coords(opponent, point_t(x, y), true)) {
         shot = point_t(x, y);
         found = true;
         break;
       }
     }
-    if(found) {
+    if (found) {
       break;
     }
   }
@@ -218,25 +247,25 @@ point_t get_random_ship_tile_coords(player_t *opponent, point_t *all_unhit_ship_
   do {
     shot = all_unhit_ship_coords[rand() % opponent->get_ship_coords_count(TileState::Unhit)];
     error_code = validate_shot_coords(opponent, shot, true);
-  } while(error_code);
+  } while (error_code);
 
   return shot;
 }
 
 point_t sink_found_ships(player_t *opponent) {
-  point_t shot, unhit_tile;
+  point_t shot, hit_tile;
   bool found = false;
 
   // Get first hit ship tile
-  for(int i = 0; i < opponent->map_size; i++) {
-    for(int j = 0; j < opponent->map_size; j++) {
-      if(opponent->map[i][j] == TileState::Hit) {
-        unhit_tile = point_t(i, j);
+  for (int i = 0; i < opponent->map_size; i++) {
+    for (int j = 0; j < opponent->map_size; j++) {
+      if (opponent->map[i][j] == TileState::Hit) {
+        hit_tile = point_t(j, i);
         found = true;
         break;
       }
     }
-    if(found) {
+    if (found) {
       break;
     }
   }
@@ -245,17 +274,18 @@ point_t sink_found_ships(player_t *opponent) {
   int dx[] = {0, 0, 1, -1};
   int dy[] = {1, -1, 0, 0};
 
-  for(int i = 0; i < DIRECTIONS_COUNT; i++) {
-    int newX = unhit_tile.x + dx[i];
-    int newY = unhit_tile.y + dy[i];
+  for (int i = 0; i < DIRECTIONS_COUNT; i++) {
+    int newX = hit_tile.x + dx[i];
+    int newY = hit_tile.y + dy[i];
 
     // Stop going that direction and try next one if the tile is sunken or missed or out of map
     while (!validate_shot_coords(opponent, point_t(newX, newY), false)) {
       // Shoot if space is available
-      if (opponent->map[newX][newY] == TileState::Unhit || opponent->map[newX][newY] == TileState::Water) {
+      if (opponent->map[newY][newX] == TileState::Unhit || opponent->map[newY][newX] == TileState::Water) {
         return {newX, newY};
       }
 
+      // Continue iteration if tile is Hit
       newX += dx[i];
       newY += dy[i];
     }

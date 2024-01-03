@@ -8,7 +8,7 @@ int get_input() {
   Difficulty eDifficulty = Difficulty::Easy;
   Randomness eRandomness = Randomness::Normal;
 
-  std::cout << "New game (1) or load game from file (2)? \n";
+  std::cout << "Select game type:\n1. New game\n2. Load game from file\n";
   std::cin >> iGameType;
   GameType eGameType = static_cast<GameType>(iGameType);
 
@@ -17,37 +17,55 @@ int get_input() {
     return -1;
   }
 
+  clear_screen();
+
   // Load new game
-  if(eGameType == GameType::New) {
-    std::cout << "Does player repeat his turn (go again) after a successful hit (hitting a ship)? (1, 2) ";
+  if (eGameType == GameType::New) {
+    std::cout << "Does player repeat his turn (go again) after a successful hit (hitting a ship)?\n1. Yes\n2. No\n";
     std::cin >> iSuccessfulHit;
     eSuccessfulHit = static_cast<SuccessfulHit>(iSuccessfulHit);
 
+    clear_screen();
+
     // Map size
-    std::cout << "Field size (5, 20): ";
+    std::cout << "Field size [" << MIN_SIZE << ", " << MAX_SIZE << "]:\n";
     std::cin >> map_size;
 
+    clear_screen();
+
     // Amount of ships to place
-    ship_t *ships = new ship_t[(map_size * map_size) / 2];
+    std::vector<ship_t> ships;
     total_ships_count = get_amount_of_ships_to_place(ships, map_size);
 
+    if (total_ships_count <= 0) {
+      return -1;
+    }
+
+    clear_screen();
+
     // Game mode
-    std::cout << "Singleplayer(1) or multiplayer(2)? ";
+    std::cout << "Select mode:\n1. Singleplayer\n2. Multiplayer\n";
     std::cin >> iMode;
     eMode = static_cast<Mode>(iMode);
+
+    clear_screen();
 
     // Singleplayer computer options
     if (eMode == Mode::Singleplayer) {
       // Difficulty
-      std::cout << "Select difficulty: 1. Easy 2. Medium 3. Hard 4. Impossible ";
+      std::cout << "Select difficulty:\n1. Easy\n2. Medium\n3. Hard\n4. Impossible\n";
       std::cin >> iDifficulty;
       eDifficulty = static_cast<Difficulty>(iDifficulty);
 
+      clear_screen();
+
       if (eDifficulty != Difficulty::Impossible) {
         // Rigged computer randomness
-        std::cout << "Can computer *cheat*? (1, 2) ";
+        std::cout << "Can computer *cheat*?\n1. Yes\n2. No\n";
         std::cin >> iRandomness;
         eRandomness = static_cast<Randomness>(iRandomness);
+
+        clear_screen();
       }
     }
 
@@ -57,10 +75,15 @@ int get_input() {
       return -1;
     }
 
-    start_game(ships, total_ships_count, map_size, eSuccessfulHit,
-               eMode, eDifficulty, eRandomness);
+    clear_screen();
+
+    if (start_game(ships, total_ships_count, map_size, eSuccessfulHit,
+               eMode, eDifficulty, eRandomness)) {
+      return -1;
+    }
   }
-  else { // Load ongoing game from file
+  // Load ongoing game from file
+  else {
     player_t player1, player2;
 
     char filename[FILENAME_MAX];
@@ -70,8 +93,8 @@ int get_input() {
     int error_code = load_game_from_file(FileHandling::All, filename, &player1, &player2,
                                          &eMode, &eSuccessfulHit, &eDifficulty, &eRandomness);
 
-    if(!error_code) {
-      game_loop(player1, player2, eMode, eSuccessfulHit, eDifficulty, eRandomness);
+    if (!error_code) {
+      game_loop(player1, player2, eMode, eSuccessfulHit, &eDifficulty, &eRandomness);
     }
     else {
       print_file_errors(error_code);
@@ -82,28 +105,34 @@ int get_input() {
   return 0;
 }
 
-int get_amount_of_ships_to_place(ship_t *ships, int map_size) {
+int get_amount_of_ships_to_place(std::vector<ship_t> &ships, int map_size) {
   int curr_ship_index = 0;
   int total_spaces_occupied_by_ships = 0;
   int total_ships_count = 0;
 
-  for (int boat_type = BoatTypes::Destroyer; boat_type != BoatTypes::Last; boat_type++) {
+  for (int boat_type = ShipTypes::Destroyer; boat_type != ShipTypes::Last; boat_type++) {
     int count = 0;
-    std::cout << "How many ships with size " << boat_type << " do you want each player to have?";
+    std::cout << "How many " << valueToEnumName(static_cast<ShipTypes>(boat_type)) <<
+                 "s (size " << boat_type << ") do you want each player to have?\n";
     std::cin >> count;
+
+    if (count < 0) {
+      std::cerr << "Can't place negative amount of ships!\n";
+      return -1;
+    }
 
     total_ships_count += count;
     total_spaces_occupied_by_ships += count * boat_type;
 
-    if (total_spaces_occupied_by_ships > map_size * map_size) {
-      std::cerr << "You've entered too many ships to fit on the map!\n";
+    if (total_spaces_occupied_by_ships > 0.85 * (map_size * map_size)) {
+      std::cerr << "You've entered too many ships! Ships must occupy less than 85% of the map!\n";
       return -1;
     }
 
     // Save inputted ships
     count += curr_ship_index;
     for (; curr_ship_index < count; curr_ship_index++) {
-      ships[curr_ship_index].size = boat_type;
+      ships.emplace_back(boat_type);
     }
   }
 

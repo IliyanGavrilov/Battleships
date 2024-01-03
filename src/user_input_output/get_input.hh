@@ -6,7 +6,7 @@
 #include "../enums/Difficulty.hh"
 #include "../enums/Randomness.hh"
 #include "../enums/Placement.hh"
-#include "../enums/BoatTypes.hh"
+#include "../enums/ShipTypes.hh"
 #include "../game/start_game.hh"
 #include "file_handling.hh"
 
@@ -14,4 +14,4 @@
 
 int get_input();
 
-int get_amount_of_ships_to_place(ship_t *ships, int map_size);
+int get_amount_of_ships_to_place(std::vector<ship_t> &ships, int map_size);
