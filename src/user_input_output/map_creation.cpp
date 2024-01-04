@@ -86,7 +86,7 @@ int generate_map(player_t &player, Placement ship_placement, Mode mode) {
         std::cin >> filename;
 
         // Load map and ships into player struct
-        int error_code = load_game_from_file(FileHandling::PlayerInfo, filename, &player);
+        int error_code = load_game_from_file(FileHandling::PlayerInfo, filename, player);
         if (error_code) {
           print_file_errors(error_code);
           if (error_code == 4) {
@@ -121,7 +121,7 @@ int generate_map(player_t &player, Placement ship_placement, Mode mode) {
         std::cout << "Filename: ";
         std::cin >> filename;
 
-        int error_code = save_game_to_file(FileHandling::PlayerInfo, filename, &player);
+        int error_code = save_game_to_file(FileHandling::PlayerInfo, filename, player);
 
         if (error_code) {
           print_file_errors(error_code);
@@ -136,7 +136,7 @@ int generate_map(player_t &player, Placement ship_placement, Mode mode) {
   return 0;
 }
 
-void set_ship_coords_on_map(std::vector<std::vector<TileState>> &map, ship_t ship) {
+void set_ship_coords_on_map(std::vector<std::vector<TileState>> &map, ship_t &ship) {
   point_t start = ship.end_coords[0], end = ship.end_coords[1];
 
   for (int i = start.y; i <= end.y; i++) {

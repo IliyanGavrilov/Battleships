@@ -30,7 +30,7 @@ void player_t::clear_map() {
   }
 }
 
-ship_t *player_t::get_hit_ship(point_t shot) {
+ship_t *player_t::get_hit_ship(point_t &shot) {
   for (int i = 0; i < ships_count; i++) {
     if (shot.is_between_points(ships[i].end_coords[0], ships[i].end_coords[1])) {
       return &ships[i];
@@ -39,7 +39,7 @@ ship_t *player_t::get_hit_ship(point_t shot) {
   return nullptr;
 }
 
-int player_t::get_hit_ship_index(ship_t ship) {
+int player_t::get_hit_ship_index(ship_t &ship) {
   for (int i = 0; i < ships_count; i++) {
     if (ships[i].size == ship.size && ships[i].end_coords[0].x == ship.end_coords[0].x && ships[i].end_coords[0].y == ship.end_coords[0].y) {
       return i;
@@ -48,7 +48,7 @@ int player_t::get_hit_ship_index(ship_t ship) {
   return 0;
 }
 
-bool player_t::shoot_at(point_t shot) {
+bool player_t::shoot_at(point_t &shot) {
   bool successful_hit = false;
 
   switch (map[shot.y][shot.x]) {
@@ -59,10 +59,10 @@ bool player_t::shoot_at(point_t shot) {
     case Unhit: {
       successful_hit = true;
 
-      ship_t hit_ship = *get_hit_ship(shot);
+      ship_t *hit_ship = get_hit_ship(shot);
       int hit_ship_tiles_count = 0;
 
-      point_t start = hit_ship.end_coords[0], end = hit_ship.end_coords[1];
+      point_t start = (*hit_ship).end_coords[0], end = (*hit_ship).end_coords[1];
 
       // Count how many ship tiles have been hit
       for (int i = start.y; i <= end.y; i++) {
@@ -74,7 +74,7 @@ bool player_t::shoot_at(point_t shot) {
       }
 
       // Check if ship is fully sunken or just hit
-      if (hit_ship_tiles_count == hit_ship.size - 1) {
+      if (hit_ship_tiles_count == (*hit_ship).size - 1) {
         // Set ship as sunken and print ship type
         for (int i = start.y; i <= end.y; i++) {
           for (int j = start.x; j <= end.x; j++) {
@@ -82,11 +82,11 @@ bool player_t::shoot_at(point_t shot) {
           }
         }
         // Remove hit ship from player ships
-        ships.erase(ships.begin() + get_hit_ship_index(hit_ship));
+        ships.erase(ships.begin() + get_hit_ship_index((*hit_ship)));
         ships_count--;
 
-        std::cout << "Sunk enemy's " << valueToEnumName(static_cast<ShipTypes>(hit_ship.size)) <<
-                     " (size " << hit_ship.size << ")!";
+        std::cout << "Sunk enemy's " << valueToEnumName(static_cast<ShipTypes>((*hit_ship).size)) <<
+                     " (size " << (*hit_ship).size << ")!";
       }
       else {
         map[shot.y][shot.x] = TileState::Hit;

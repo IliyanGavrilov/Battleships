@@ -1,6 +1,6 @@
 #include "file_handling.hh"
 
-int load_game_from_file(FileHandling load_type, char *filename, player_t *player1, player_t *player2, Mode *eMode,
+int load_game_from_file(FileHandling load_type, char *filename, player_t &player1, player_t *player2, Mode *eMode,
                         SuccessfulHit *eSuccessfulHit, Difficulty *eDifficulty, Randomness *eRandomness) {
   std::ifstream file(filename);
 
@@ -37,19 +37,19 @@ int load_game_from_file(FileHandling load_type, char *filename, player_t *player
       *eDifficulty = static_cast<Difficulty>(stoi(result[index++]));
       *eRandomness = static_cast<Randomness>(stoi(result[index]));
 
-      (*player1).map_size = map_size;
-      (*player1).ships_count = total_ships_count;
-      player1->setMap();
+      (player1).map_size = map_size;
+      (player1).ships_count = total_ships_count;
+      player1.setMap();
       (*player2).map_size = map_size;
       (*player2).ships_count = total_ships_count;
-      player2->setMap();
+      (*player2).setMap();
 
       // Skip empty line before loading Player 1 information (map and ships)
       std::getline(file, line);
     }
 
     // Load Player 1 information
-    if (load_player_info_from_file(load_type, file, *player1)) {
+    if (load_player_info_from_file(load_type, file, player1)) {
       return 4;
     }
 
@@ -119,7 +119,7 @@ int load_player_info_from_file(FileHandling load_type, std::ifstream &file, play
   return 0;
 }
 
-int save_game_to_file(FileHandling save_type, char *filename, player_t *player1, player_t *player2, Mode *eMode,
+int save_game_to_file(FileHandling save_type, char *filename, player_t &player1, player_t *player2, Mode *eMode,
                       SuccessfulHit *eSuccessfulHit, Difficulty *eDifficulty, Randomness *eRandomness) {
   // Open file or create new if it doesn't exist
   std::ofstream file(filename, std::ios::app);
@@ -137,14 +137,14 @@ int save_game_to_file(FileHandling save_type, char *filename, player_t *player1,
   if (file.is_open()) {
     if (save_type == FileHandling::All) {
       // Save game settings (a.k.a. map_size, ship_count, enums) to the first line
-      file << player1->map_size << " " << player1->ships_count << " " <<
+      file << player1.map_size << " " << player1.ships_count << " " <<
       *eSuccessfulHit << " " << *eMode << " " << *eDifficulty << " " << *eRandomness << "\n";
 
       // Skip empty line before saving Player 1 information (map and ships)
       file << "\n";
     }
 
-    save_player_info_to_file(file, *player1);
+    save_player_info_to_file(file, player1);
 
     if (save_type == FileHandling::All) {
       // Skip empty line before saving Player 2 information (map and ships)

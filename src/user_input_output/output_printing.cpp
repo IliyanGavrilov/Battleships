@@ -92,7 +92,7 @@ void print_map(std::vector<std::vector<TileState>> &map_before, int map_size, bo
   std::cout << "\n\n";
 }
 
-void print_ship_sizes_left(std::vector<ship_t> ships) {
+void print_ship_sizes_left(std::vector<ship_t> &ships) {
   if (ships.size() > 0) {
     std::cout << "Opponent ships left: ";
 

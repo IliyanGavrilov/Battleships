@@ -90,7 +90,7 @@ int get_input() {
     std::cout << "Filename: ";
     std::cin >> filename;
 
-    int error_code = load_game_from_file(FileHandling::All, filename, &player1, &player2,
+    int error_code = load_game_from_file(FileHandling::All, filename, player1, &player2,
                                          &eMode, &eSuccessfulHit, &eDifficulty, &eRandomness);
 
     if (!error_code) {

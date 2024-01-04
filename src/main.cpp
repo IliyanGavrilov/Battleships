@@ -5,5 +5,6 @@ int main() {
 }
 
 // TODO Fix settings input
-// TODO Fix passing whole player struct instead of separate parameters AND passing by reference instead of copying
+// TODO Fix printing code
+// TODO Fix passing whole player struct instead of separate parameters
 // TODO "const" (TileState ** const map, const int size, const ship_t end_points)
