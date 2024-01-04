@@ -10,7 +10,7 @@ int get_input() {
 
   std::cout << "Select game type:\n1. New game\n2. Load game from file\n";
   std::cin >> iGameType;
-  GameType eGameType = static_cast<GameType>(iGameType);
+  GameType eGameType = (GameType) iGameType;
 
   if (!validate_input(eGameType)) {
     std::cerr << "Invalid input!\n";
@@ -23,7 +23,7 @@ int get_input() {
   if (eGameType == GameType::New) {
     std::cout << "Does player repeat his turn (go again) after a successful hit (hitting a ship)?\n1. Yes\n2. No\n";
     std::cin >> iSuccessfulHit;
-    eSuccessfulHit = static_cast<SuccessfulHit>(iSuccessfulHit);
+    eSuccessfulHit = (SuccessfulHit) iSuccessfulHit;
 
     clear_screen();
 
@@ -46,7 +46,7 @@ int get_input() {
     // Game mode
     std::cout << "Select mode:\n1. Singleplayer\n2. Multiplayer\n";
     std::cin >> iMode;
-    eMode = static_cast<Mode>(iMode);
+    eMode = (Mode) iMode;
 
     clear_screen();
 
@@ -55,7 +55,7 @@ int get_input() {
       // Difficulty
       std::cout << "Select difficulty:\n1. Easy\n2. Medium\n3. Hard\n4. Impossible\n";
       std::cin >> iDifficulty;
-      eDifficulty = static_cast<Difficulty>(iDifficulty);
+      eDifficulty = (Difficulty) iDifficulty;
 
       clear_screen();
 
@@ -63,7 +63,7 @@ int get_input() {
         // Rigged computer randomness
         std::cout << "Can computer *cheat*?\n1. Yes\n2. No\n";
         std::cin >> iRandomness;
-        eRandomness = static_cast<Randomness>(iRandomness);
+        eRandomness = (Randomness) iRandomness;
 
         clear_screen();
       }
@@ -112,7 +112,7 @@ int get_amount_of_ships_to_place(std::vector<ship_t> &ships, int map_size) {
 
   for (int boat_type = ShipTypes::Destroyer; boat_type != ShipTypes::Last; boat_type++) {
     int count = 0;
-    std::cout << "How many " << valueToEnumName(static_cast<ShipTypes>(boat_type)) <<
+    std::cout << "How many " << valueToEnumName((ShipTypes) boat_type) <<
                  "s (size " << boat_type << ") do you want each player to have?\n";
     std::cin >> count;
 

@@ -108,7 +108,7 @@ void print_ship_sizes_left(const std::vector<ship_t> &ships) {
 
     for (int i = 0; i < SHIP_TYPES; i++) {
       if (count_ship_types[i] > 0) {
-        std::cout << valueToEnumName(static_cast<ShipTypes>(i + ShipTypes::Destroyer)) << " (size " << i + ShipTypes::Destroyer << ") x "
+        std::cout << valueToEnumName((ShipTypes) (i + ShipTypes::Destroyer)) << " (size " << i + ShipTypes::Destroyer << ") x "
                   << count_ship_types[i] << " ";
       }
     }

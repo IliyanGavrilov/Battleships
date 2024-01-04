@@ -1,6 +1,7 @@
 # Battleships
 
-A simple console application made in C++ without much OOP. [More about battleships](https://en.wikipedia.org/wiki/Battleship_(game)#Description)
+A simple console application made in C++ without much OOP. 
+[More about battleships](https://en.wikipedia.org/wiki/Battleship_(game)#Description)
 
 ## Installation
 You can run the game directly on Windows using battleships.exe.

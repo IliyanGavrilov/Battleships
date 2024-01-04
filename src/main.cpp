@@ -3,5 +3,3 @@
 int main() {
   return get_input();
 }
-
-// TODO Fix settings input

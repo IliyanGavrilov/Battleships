@@ -27,7 +27,7 @@ void game_loop(player_t &p1, player_t &p2, Mode mode, SuccessfulHit successfulHi
       std::cout << "Player 1's turn:\n";
 
       // If player hit a ship AND option is on then player repeats his turn
-    } while (play_turn(p2, difficulty, randomness) && successfulHit == SuccessfulHit::RepeatTurn);
+    } while (play_turn(p2) && successfulHit == SuccessfulHit::RepeatTurn);
 
 
     if (check_win(p1, p2)) {
@@ -50,7 +50,7 @@ void game_loop(player_t &p1, player_t &p2, Mode mode, SuccessfulHit successfulHi
     int iSaveToFile;
     std::cout << "Do you want to save the current game state to a file?\n1. Yes\n2. No\n";
     std::cin >> iSaveToFile;
-    SaveToFile eSaveToFile = static_cast<SaveToFile>(iSaveToFile);
+    SaveToFile eSaveToFile = (SaveToFile) iSaveToFile;
 
     // Write map to file
     if (eSaveToFile == SaveToFile::Save) {
@@ -88,7 +88,7 @@ bool play_turn(player_t &opponent, const Difficulty *difficulty, const Randomnes
   // Make a move
   point_t shot = get_shot_coords(opponent, difficulty, randomness, chance_to_cheat);
 
-  clear_screen();
+  // clear_screen(); // !!!
 
   // Update board and if shot hit or missed
   return_val = opponent.shoot_at(shot);
@@ -146,7 +146,7 @@ point_t get_shot_coords(const player_t &opponent, const Difficulty *difficulty, 
 
     do {
       char y;
-      std::cout << "Shoot at (letter, number): [1, " << opponent.map_size << "]\n";
+      std::cout << "Shoot at (letter, number): [A, " << (char) ('A' + opponent.map_size - 1) << "], [1, " << opponent.map_size << "]\n";
       std::cin >> y >> shot.x;
 
       if (std::cin.fail()) {

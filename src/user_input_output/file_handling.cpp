@@ -32,10 +32,10 @@ int load_game_from_file(FileHandling load_type, char *filename, player_t &player
       // Then cast them to enum
       int map_size = stoi(result[index++]);
       int total_ships_count = stoi(result[index++]);
-      *eSuccessfulHit = static_cast<SuccessfulHit>(stoi(result[index++]));
-      *eMode = static_cast<Mode>(stoi(result[index++]));
-      *eDifficulty = static_cast<Difficulty>(stoi(result[index++]));
-      *eRandomness = static_cast<Randomness>(stoi(result[index]));
+      *eSuccessfulHit = (SuccessfulHit) stoi(result[index++]);
+      *eMode = (Mode) stoi(result[index++]);
+      *eDifficulty = (Difficulty) stoi(result[index++]);
+      *eRandomness = (Randomness) stoi(result[index]);
 
       (player1).map_size = map_size;
       (player1).ships_count = total_ships_count;
@@ -79,15 +79,15 @@ int load_player_info_from_file(FileHandling load_type, std::ifstream &file, play
   // Read player map (matrix) line by line
   for (int i = 0; i < player.map_size; i++) {
     std::getline(file, line);
-    std::vector <std::string> v = split_string(line.c_str());
+    std::vector <std::string> result = split_string(line.c_str());
 
     // Map size in file does not match input map size
-    if ((int)v.size() - 1 != player.map_size) {
+    if ((int)result.size() - 1 != player.map_size) {
       return -1;
     }
 
     for (int j = 0; j < player.map_size; j++) {
-      player.map[i][j] = (charToTileState(*v[j].c_str()));
+      player.map[i][j] = (charToTileState(*result[j].c_str()));
     }
   }
 
@@ -97,22 +97,22 @@ int load_player_info_from_file(FileHandling load_type, std::ifstream &file, play
   // Read player ships line by line
   for (int i = 0; i < player.ships_count; i++) {
     std::getline(file, line);
-    std::vector<std::string> v = split_string(line.c_str());
+    std::vector<std::string> result = split_string(line.c_str());
 
     // If wrong amount of arguments or have read too many ships (5 arguments - size and 2 points with 2 coordinates 1 + 2 + 2 = 5)
-    if (v.size() != 5) {
+    if (result.size() != 5) {
       return -1;
     }
 
     if (load_type == FileHandling::PlayerInfo) {
-      player.ships[i] = ship_t(stoi(v[0]),
-                               point_t(stoi(v[1]), stoi(v[2])),
-                               point_t(stoi(v[3]), stoi(v[4])));
+      player.ships[i] = ship_t(stoi(result[0]),
+                               point_t(stoi(result[1]), stoi(result[2])),
+                               point_t(stoi(result[3]), stoi(result[4])));
     }
     else {
-      player.ships.emplace_back(stoi(v[0]),
-                               point_t(stoi(v[1]), stoi(v[2])),
-                               point_t(stoi(v[3]), stoi(v[4])));
+      player.ships.emplace_back(stoi(result[0]),
+                               point_t(stoi(result[1]), stoi(result[2])),
+                               point_t(stoi(result[3]), stoi(result[4])));
     }
   }
 

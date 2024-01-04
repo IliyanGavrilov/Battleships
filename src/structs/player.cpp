@@ -41,7 +41,8 @@ ship_t *player_t::get_hit_ship(const point_t &shot) {
 
 int player_t::get_hit_ship_index(const ship_t &ship) const {
   for (int i = 0; i < ships_count; i++) {
-    if (ships[i].size == ship.size && ships[i].end_coords[0].x == ship.end_coords[0].x && ships[i].end_coords[0].y == ship.end_coords[0].y) {
+    if (ships[i].size == ship.size && ships[i].end_coords[0].x == ship.end_coords[0].x &&
+        ships[i].end_coords[0].y == ship.end_coords[0].y) {
       return i;
     }
   }
@@ -85,7 +86,7 @@ bool player_t::shoot_at(const point_t &shot) {
         ships.erase(ships.begin() + get_hit_ship_index((*hit_ship)));
         ships_count--;
 
-        std::cout << "Sunk enemy's " << valueToEnumName(static_cast<ShipTypes>((*hit_ship).size)) <<
+        std::cout << "Sunk enemy's " << valueToEnumName((ShipTypes) (*hit_ship).size) <<
                      " (size " << (*hit_ship).size << ")!";
       }
       else {

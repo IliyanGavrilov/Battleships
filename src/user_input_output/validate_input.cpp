@@ -52,7 +52,7 @@ Placement get_placement() {
     // Ship placement (Map type)
     std::cout << "Select option:\n1. Create custom map\n2. Load map from file\n3. Random generation\n";
     std::cin >> iPlacement;
-    ePlacement = static_cast<Placement>(iPlacement);
+    ePlacement = (Placement) iPlacement;
   } while (!validate_ship_placement(ePlacement));
 
   return ePlacement;

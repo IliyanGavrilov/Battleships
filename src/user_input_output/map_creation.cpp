@@ -112,7 +112,7 @@ int generate_map(player_t &player, Placement ship_placement, Mode mode) {
     int iSaveToFile;
     std::cout << "Do you want to save this map to a file?\n1. Yes\n2. No\n";
     std::cin >> iSaveToFile;
-    SaveToFile eSaveToFile = static_cast<SaveToFile>(iSaveToFile);
+    SaveToFile eSaveToFile = (SaveToFile) iSaveToFile;
 
     // Write map to file
     if (eSaveToFile == SaveToFile::Save) {
