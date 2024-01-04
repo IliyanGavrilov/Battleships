@@ -39,10 +39,10 @@ int load_game_from_file(FileHandling load_type, char *filename, player_t &player
 
       (player1).map_size = map_size;
       (player1).ships_count = total_ships_count;
-      player1.setMap();
+      player1.set_map();
       (*player2).map_size = map_size;
       (*player2).ships_count = total_ships_count;
-      (*player2).setMap();
+      (*player2).set_map();
 
       // Skip empty line before loading Player 1 information (map and ships)
       std::getline(file, line);
@@ -119,8 +119,8 @@ int load_player_info_from_file(FileHandling load_type, std::ifstream &file, play
   return 0;
 }
 
-int save_game_to_file(FileHandling save_type, char *filename, player_t &player1, player_t *player2, Mode *eMode,
-                      SuccessfulHit *eSuccessfulHit, Difficulty *eDifficulty, Randomness *eRandomness) {
+int save_game_to_file(FileHandling save_type, char *filename, const player_t &player1, const player_t *player2, const Mode *eMode,
+                      const SuccessfulHit *eSuccessfulHit, const Difficulty *eDifficulty, const Randomness *eRandomness) {
   // Open file or create new if it doesn't exist
   std::ofstream file(filename, std::ios::app);
 
@@ -163,7 +163,7 @@ int save_game_to_file(FileHandling save_type, char *filename, player_t &player1,
   return 0;
 }
 
-void save_player_info_to_file(std::ofstream &file, player_t &player) {
+void save_player_info_to_file(std::ofstream &file, const player_t &player) {
   // Save player map (matrix)
   for (int i = 0; i < player.map_size; i++) {
     for (int j = 0; j < player.map_size; j++) {

@@ -5,14 +5,14 @@ player_t::player_t() {
   this->ships_count = 0;
 }
 
-player_t::player_t(int map_size, std::vector<ship_t> ships, int ships_count) {
+player_t::player_t(int map_size, const std::vector<ship_t> &ships, int ships_count) {
   this->map_size = map_size;
-  this->setMap();
+  this->set_map();
   this->ships = ships;
   this->ships_count = ships_count;
 }
 
-void player_t::setMap() {
+void player_t::set_map() {
   for (int i = 0; i < map_size; i++) {
     std::vector<TileState> row;
     for (int j = 0; j < map_size; j++) {
@@ -30,7 +30,7 @@ void player_t::clear_map() {
   }
 }
 
-ship_t *player_t::get_hit_ship(point_t &shot) {
+ship_t *player_t::get_hit_ship(const point_t &shot) {
   for (int i = 0; i < ships_count; i++) {
     if (shot.is_between_points(ships[i].end_coords[0], ships[i].end_coords[1])) {
       return &ships[i];
@@ -39,7 +39,7 @@ ship_t *player_t::get_hit_ship(point_t &shot) {
   return nullptr;
 }
 
-int player_t::get_hit_ship_index(ship_t &ship) {
+int player_t::get_hit_ship_index(const ship_t &ship) const {
   for (int i = 0; i < ships_count; i++) {
     if (ships[i].size == ship.size && ships[i].end_coords[0].x == ship.end_coords[0].x && ships[i].end_coords[0].y == ship.end_coords[0].y) {
       return i;
@@ -48,7 +48,7 @@ int player_t::get_hit_ship_index(ship_t &ship) {
   return 0;
 }
 
-bool player_t::shoot_at(point_t &shot) {
+bool player_t::shoot_at(const point_t &shot) {
   bool successful_hit = false;
 
   switch (map[shot.y][shot.x]) {
@@ -102,7 +102,7 @@ bool player_t::shoot_at(point_t &shot) {
   return successful_hit;
 }
 
-point_t *player_t::get_unhit_ship_coords() {
+point_t *player_t::get_unhit_ship_coords() const {
   point_t *ship_coords = new point_t[get_ship_coords_count(TileState::Unhit)];
   int l = 0;
 
@@ -118,7 +118,7 @@ point_t *player_t::get_unhit_ship_coords() {
   return ship_coords;
 }
 
-int player_t::get_ship_coords_count(TileState ship_state) {
+int player_t::get_ship_coords_count(TileState ship_state) const {
   int count = 0;
 
   for (int i = 0; i < map_size; i++) {
@@ -133,7 +133,7 @@ int player_t::get_ship_coords_count(TileState ship_state) {
   return count;
 }
 
-int player_t::get_smallest_ship_size() {
+int player_t::get_smallest_ship_size() const {
   int min = ShipTypes::Carrier;
 
   for (int i = 0; i < ships_count; i++) {

@@ -12,7 +12,7 @@ int create_custom_map(player_t &player) {
     p2.x--;
     p2.y--;
 
-    ship_t::fix_start_end_coords(p1, p2);
+    fix_start_end_coords(p1, p2);
 
     int error_code = validate_ship_coords(player.map, player.map_size, player.ships[i].size, p1, p2);
 
@@ -54,7 +54,7 @@ int create_random_map(player_t &player) {
     }
     p2 = point_t(x, y);
 
-    ship_t::fix_start_end_coords(p1, p2);
+    fix_start_end_coords(p1, p2);
 
     int error_code = validate_ship_coords(player.map, player.map_size, player.ships[i].size, p1, p2);
 
@@ -136,7 +136,7 @@ int generate_map(player_t &player, Placement ship_placement, Mode mode) {
   return 0;
 }
 
-void set_ship_coords_on_map(std::vector<std::vector<TileState>> &map, ship_t &ship) {
+void set_ship_coords_on_map(std::vector<std::vector<TileState>> &map, const ship_t &ship) {
   point_t start = ship.end_coords[0], end = ship.end_coords[1];
 
   for (int i = start.y; i <= end.y; i++) {

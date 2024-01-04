@@ -58,7 +58,8 @@ Placement get_placement() {
   return ePlacement;
 }
 
-int validate_ship_coords(std::vector<std::vector<TileState>> &map, int map_size, int ship_size, point_t &p1, point_t &p2) {
+int validate_ship_coords(const std::vector<std::vector<TileState>> &map, int map_size, int ship_size, const point_t &p1,
+                         const point_t &p2) {
   // Coordinates are outside of map
   if (p1.x < 0 || p1.x >= map_size || p2.x < 0 || p2.x >= map_size || p1.y < 0 || p1.y >= map_size || p2.y < 0 || p2.y >= map_size) {
     return 1;
@@ -92,7 +93,7 @@ int validate_ship_coords(std::vector<std::vector<TileState>> &map, int map_size,
   return 0;
 }
 
-bool can_ship_fit_on_map(std::vector<std::vector<TileState>> &map, int map_size, int ship_size) {
+bool can_ship_fit_on_map(const std::vector<std::vector<TileState>> &map, int map_size, int ship_size) {
   int count_horizontal_tiles, count_vertical_tiles;
 
   for (int i = 0; i < map_size; i++) {
@@ -139,7 +140,7 @@ bool can_ship_fit_on_map(std::vector<std::vector<TileState>> &map, int map_size,
 
 // Flag is used in the computer's sinking the hit ship logic so that the
 // loop continues when the tile is hit
-int validate_shot_coords(player_t &player, point_t shot, bool flag) {
+int validate_shot_coords(const player_t &player, const point_t &shot, bool flag) {
   // Coordinates are outside of map
   if (shot.x < 0 || shot.x >= player.map_size || shot.y < 0 || shot.y >= player.map_size) {
     return 1;

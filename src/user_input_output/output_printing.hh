@@ -11,7 +11,7 @@ void print_grid_line(int map_size);
 
 void print_x_axis_numbers(int map_size);
 
-void print_map(std::vector<std::vector<TileState>> &map_before, int map_size, bool flag,
-               std::vector<std::vector<TileState>> *map_after = nullptr);
+void print_map(const std::vector<std::vector<TileState>> &map_before, int map_size, bool flag,
+               const std::vector<std::vector<TileState>> *map_after = nullptr);
 
-void print_ship_sizes_left(std::vector<ship_t> &ships);
+void print_ship_sizes_left(const std::vector<ship_t> &ships);

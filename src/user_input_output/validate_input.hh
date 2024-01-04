@@ -23,11 +23,11 @@ bool validate_ship_placement(Placement ship_placement);
 
 Placement get_placement();
 
-int validate_ship_coords(std::vector<std::vector<TileState>> &map, int map_size, int ship_size, point_t &p1, point_t &p2);
+int validate_ship_coords(const std::vector<std::vector<TileState>> &map, int map_size, int ship_size, const point_t &p1, const point_t &p2);
 
-bool can_ship_fit_on_map(std::vector<std::vector<TileState>> &map, int map_size, int ship_size);
+bool can_ship_fit_on_map(const std::vector<std::vector<TileState>> &map, int map_size, int ship_size);
 
-int validate_shot_coords(player_t &player, point_t shot, bool flag);
+int validate_shot_coords(const player_t &player, const point_t &shot, bool flag);
 
 void print_invalid_coords_error_code(int error_code);
 

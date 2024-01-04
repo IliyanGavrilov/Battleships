@@ -1,7 +1,7 @@
 #include "output_printing.hh"
 
 void print_grid_line(int map_size) {
-  std::cout << "   ";
+  std::cout << "   "; // 3
   for (int i = 0; i < map_size; i++) {
     std::cout << "+---";
   }
@@ -11,7 +11,6 @@ void print_grid_line(int map_size) {
 
 // Print row of numbers (x-axis coordinates)
 void print_x_axis_numbers(int map_size) {
-  //std::cout << "     ";
   std::cout << "  ";
   for (int i = 0; i < map_size; i++) {
     std::cout << std::setw(4) << i + 1;
@@ -20,8 +19,8 @@ void print_x_axis_numbers(int map_size) {
 
 // Flag is to tell where function is called from
 // If it is before the game starts ship locations are displayed, but during the game they're hidden
-void print_map(std::vector<std::vector<TileState>> &map_before, int map_size, bool flag,
-                            std::vector<std::vector<TileState>> *map_after) {
+void print_map(const std::vector<std::vector<TileState>> &map_before, int map_size, bool flag,
+               const std::vector<std::vector<TileState>> *map_after) {
   std::cout << "\n";
 
   print_x_axis_numbers(map_size);
@@ -92,18 +91,18 @@ void print_map(std::vector<std::vector<TileState>> &map_before, int map_size, bo
   std::cout << "\n\n";
 }
 
-void print_ship_sizes_left(std::vector<ship_t> &ships) {
-  if (ships.size() > 0) {
+void print_ship_sizes_left(const std::vector<ship_t> &ships) {
+  if (!ships.empty()) {
     std::cout << "Opponent ships left: ";
 
     int count_ship_types[SHIP_TYPES];
-    for (int i = 0; i < SHIP_TYPES; i++) {
-      count_ship_types[i] = 0;
+    for (int &count_ship_type : count_ship_types) {
+      count_ship_type = 0;
     }
 
     // Count each type of ship
-    for (int i = 0; i < (int)ships.size(); i++) {
-      count_ship_types[ships[i].size - ShipTypes::Destroyer]++;
+    for (const ship_t &ship : ships) {
+      count_ship_types[ship.size - ShipTypes::Destroyer]++;
     }
 
 

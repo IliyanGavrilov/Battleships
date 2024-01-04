@@ -1,6 +1,6 @@
 #include "start_game.hh"
 
-int start_game(std::vector<ship_t> &ships_to_place, int ships_count, int map_size, SuccessfulHit successfulHit,
+int start_game(const std::vector<ship_t> &ships_to_place, int ships_count, int map_size, SuccessfulHit successfulHit,
                 Mode mode, Difficulty difficulty, Randomness randomness) {
   // Set random seed
   srand(time(nullptr));
