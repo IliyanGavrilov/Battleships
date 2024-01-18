@@ -137,8 +137,8 @@ int save_game_to_file(FileHandling save_type, char *filename, const player_t &pl
   if (file.is_open()) {
     if (save_type == FileHandling::All) {
       // Save game settings (a.k.a. map_size, ship_count, enums) to the first line
-      file << player1.map_size << " " << player1.ships_count << " " <<
-      *eSuccessfulHit << " " << *eMode << " " << *eDifficulty << " " << *eRandomness << "\n";
+      file << player1.map_size << " " << player1.ships_count << " " << *eSuccessfulHit << " " << *eMode << " " <<
+      ((eDifficulty == nullptr) ? 0 : *eDifficulty) << " " << ((eRandomness == nullptr) ? 0 : *eRandomness)<< "\n";
 
       // Skip empty line before saving Player 1 information (map and ships)
       file << "\n";
