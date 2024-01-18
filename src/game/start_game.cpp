@@ -1,3 +1,19 @@
+// /**
+// *
+// * Solution to course project # 1
+// * Introduction to programming course
+// * Faculty of Mathematics and Informatics of Sofia University
+// * Winter semester 2023/2024
+// *
+// * @author Iliyan Gavrilov
+// * @idnumber 6MI0600293
+// * @compiler GCC
+// *
+// * <file with function to prepare the start of the game - create players and maps>
+// *
+// *
+//
+
 #include "start_game.hh"
 
 int start_game(const std::vector<ship_t> &ships_to_place, int ships_count, int map_size, SuccessfulHit successfulHit,

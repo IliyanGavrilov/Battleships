@@ -1,3 +1,19 @@
+// /**
+// *
+// * Solution to course project # 1
+// * Introduction to programming course
+// * Faculty of Mathematics and Informatics of Sofia University
+// * Winter semester 2023/2024
+// *
+// * @author Iliyan Gavrilov
+// * @idnumber 6MI0600293
+// * @compiler GCC
+// *
+// * <file with functions executed during gameplay>
+// *
+// *
+//
+
 #include "gameplay.hh"
 
 bool check_win(const player_t &p1, const player_t &p2) {

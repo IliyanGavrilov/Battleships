@@ -1,3 +1,19 @@
+// /**
+// *
+// * Solution to course project # 1
+// * Introduction to programming course
+// * Faculty of Mathematics and Informatics of Sofia University
+// * Winter semester 2023/2024
+// *
+// * @author Iliyan Gavrilov
+// * @idnumber 6MI0600293
+// * @compiler GCC
+// *
+// * <header file with functions executed during gameplay>
+// *
+// *
+//
+
 #include <limits>
 #include "../enums/Mode.hh"
 #include "../enums/SuccessfulHit.hh"

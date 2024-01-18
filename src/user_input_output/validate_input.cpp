@@ -1,3 +1,19 @@
+// /**
+// *
+// * Solution to course project # 1
+// * Introduction to programming course
+// * Faculty of Mathematics and Informatics of Sofia University
+// * Winter semester 2023/2024
+// *
+// * @author Iliyan Gavrilov
+// * @idnumber 6MI0600293
+// * @compiler GCC
+// *
+// * <file with functions related to validating user input>
+// *
+// *
+//
+
 #include "validate_input.hh"
 
 bool validate_game_type(int gameType) {

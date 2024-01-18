@@ -1,3 +1,19 @@
+// /**
+// *
+// * Solution to course project # 1
+// * Introduction to programming course
+// * Faculty of Mathematics and Informatics of Sofia University
+// * Winter semester 2023/2024
+// *
+// * @author Iliyan Gavrilov
+// * @idnumber 6MI0600293
+// * @compiler GCC
+// *
+// * <file with functions for loading and saving information to files>
+// *
+// *
+//
+
 #include "file_handling.hh"
 
 int load_game_from_file(FileHandling load_type, char *filename, player_t &player1, player_t *player2, Mode *eMode,
