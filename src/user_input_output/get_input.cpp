@@ -5,18 +5,13 @@ int get_input() {
   int gameType = 0, map_size = 0, successfulHit = 0, mode = 0, difficulty = 1,  randomness = 1;
 
   game_settings_t settings[] = {
-(game_settings_t){&gameType, "Select game type:\n1. New game\n2. Load game from file\n",
-                  validate_game_type},
-(game_settings_t){&map_size, "Field size [" + std::to_string(MIN_SIZE) + ", " + std::to_string(MAX_SIZE) + "]:\n",
-                  validate_map_size},
-(game_settings_t){&successfulHit, "Does player repeat his turn (go again) after a successful hit (hitting a ship)?\n1. Yes\n2. No\n",
-                  validate_successful_hit},
-(game_settings_t){&mode, "Select mode:\n1. Singleplayer\n2. Multiplayer\n",
-                  validate_mode},
-(game_settings_t){&difficulty, "Select difficulty:\n1. Easy\n2. Medium\n3. Hard\n4. Impossible\n",
-                  validate_difficulty},
-(game_settings_t){&randomness, "Can computer *cheat*?\n1. Yes\n2. No\n",
-                  validate_randomness}};
+    game_settings_t(&gameType, "Select game type:\n1. New game\n2. Load game from file\n", validate_game_type),
+    game_settings_t(&map_size, "Field size [" + std::to_string(MIN_SIZE) + ", " + std::to_string(MAX_SIZE) + "]:\n", validate_map_size),
+    game_settings_t(&successfulHit, "Does player repeat his turn (go again) after a successful hit (hitting a ship)?\n1. Yes\n2. No\n",
+                      validate_successful_hit),
+    game_settings_t(&mode, "Select mode:\n1. Singleplayer\n2. Multiplayer\n", validate_mode),
+    game_settings_t(&difficulty, "Select difficulty:\n1. Easy\n2. Medium\n3. Hard\n4. Impossible\n", validate_difficulty),
+    game_settings_t(&randomness, "Can computer *cheat*?\n1. Yes\n2. No\n", validate_randomness)};
 
 
   for (game_settings_t &setting : settings) {
@@ -36,7 +31,6 @@ int get_input() {
       if (std::cin.fail()) {
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        continue;
       }
 
       correct_input = setting.input_validation_func(*setting.game_setting);
