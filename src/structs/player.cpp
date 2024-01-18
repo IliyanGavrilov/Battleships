@@ -55,7 +55,7 @@ bool player_t::shoot_at(const point_t &shot) {
   switch (map[shot.y][shot.x]) {
     case Water: {
       map[shot.y][shot.x] = TileState::Miss;
-      std::cout << "Missed!";
+      std::cout << WHITE_T << "Missed!" << RESET;
     }break;
     case Unhit: {
       successful_hit = true;
@@ -86,19 +86,19 @@ bool player_t::shoot_at(const point_t &shot) {
         ships.erase(ships.begin() + get_hit_ship_index((*hit_ship)));
         ships_count--;
 
-        std::cout << "Sunk enemy's " << valueToEnumName((ShipTypes) (*hit_ship).size) <<
-                     " (size " << (*hit_ship).size << ")!";
+        std::cout << ORANGE_T << "Sunk enemy's " << valueToEnumName((ShipTypes) (*hit_ship).size) <<
+                     " (size " << (*hit_ship).size << ")!" << RESET;
       }
       else {
         map[shot.y][shot.x] = TileState::Hit;
-        std::cout << "Hit enemy ship!";
+        std::cout << RED_T << "Hit enemy ship!" << RESET;
       }
     }break;
     default: break; // Hit, Miss or Sunken case
   }
 
   // Print shot coords
-  std::cout << " [" << char('A' + shot.y) << shot.x + 1 << "]\n";
+  std::cout << WHITE_T << " [" << char('A' + shot.y) << shot.x + 1 << "]\n" << RESET;
 
   return successful_hit;
 }

@@ -64,3 +64,20 @@ printed - the left one is the opponent's board before the shot and the right one
 the option for repeating turn was enabled the player goes again. Otherwise, it's Player 2's turn. After Player 2's turn the game will ask
 if you would like to save the game state and quit or continue playing. The game ends when one of the players successfully sinks all the
 opponent's ships.
+
+# Algorithms used
+## Computer sink a hit ship
+The Medium and Hard difficulty computer tries to sink a ship fully if it has hit one. First the algorithm checks if there are any hit tiles
+after that it locates the first hit tile's coordinates and tries to go in every vertical and horizontal direction (because the ships are
+straight) going top, down, right left. The algorithm tries going into each of those directions in that order until it has reached the end
+of the map or that direction has already been fully checked (a.k.a the next tile in that direction is a missed shot tile or a sunken ship
+tile). Then it goes to check the next direction and iterates through all directions until the ship is fully sunken before ending the
+algorithm and making normal shots.
+## Computer parity shot
+An effective strategy in Battleships is to not shoot every single tile on the map, because that wouldn't be effective. Instead, the player
+should try to shoot every n tiles where n is the smallest ship size left. For example if the smallest ship left is with size 3 the player
+should shoot every 3 tiles and leave 2 space vertical and horizontal gaps and that way he's still guaranteed the hit the smallest ship, and
+it would be a way faster method then just shooting at every single tile on the map.
+The Hard difficulty computer also does this by finding the smallest ship that is still not sunk/hit and then shoots every n tiles. So  if
+the smallest ship size left is 2, computer would shoot at the first, third, fifth, seventh, etc. tile on every odd numbered column
+and shoot at the second, fourth, sixth, eight, etc. tile on every even numbered column.

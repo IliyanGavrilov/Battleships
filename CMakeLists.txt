@@ -11,4 +11,4 @@ add_executable(battleships src/main.cpp src/structs/point.hh src/structs/point.c
                src/user_input_output/map_creation.cpp src/game/gameplay.cpp src/game/gameplay.hh src/user_input_output/file_handling.hh
                src/user_input_output/file_handling.cpp src/enums/TileState.cpp src/enums/SaveToFile.hh src/enums/FileHandling.hh
                src/user_input_output/validate_input.cpp src/user_input_output/output_printing.cpp
-               src/user_input_output/output_printing.hh src/enums/ShipTypes.cpp)
+               src/user_input_output/output_printing.hh src/enums/ShipTypes.cpp src/user_input_output/colours.hh src/structs/game_settings.hh)

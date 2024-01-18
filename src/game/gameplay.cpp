@@ -2,11 +2,11 @@
 
 bool check_win(const player_t &p1, const player_t &p2) {
   if (p2.ships_count <= 0) {
-    std::cout << "Player 1 wins!\n";
+    std::cout << WHITE_T << "Player 1 wins!\n" << RESET;
     return true;
   }
   if (p1.ships_count <= 0) {
-    std::cout << "Player 2 wins!\n";
+    std::cout << WHITE_T << "Player 2 wins!\n" << RESET;
     return true;
   }
 
@@ -24,7 +24,7 @@ void game_loop(player_t &p1, player_t &p2, Mode mode, SuccessfulHit successfulHi
     // Player 1's turn
     do {
       // clear_screen();
-      std::cout << "Player 1's turn:\n";
+      std::cout << WHITE_B << RED_T << "Player 1's turn:\n" << RESET;
 
       // If player hit a ship AND option is on then player repeats his turn
     } while (play_turn(p2) && successfulHit == SuccessfulHit::RepeatTurn);
@@ -37,7 +37,7 @@ void game_loop(player_t &p1, player_t &p2, Mode mode, SuccessfulHit successfulHi
     // Player 2's turn
     do {
       // clear_screen();
-      std::cout << "Player 2's turn:\n";
+      std::cout << WHITE_B << RED_T <<  "Player 2's turn:\n" << RESET;
 
       // If player hit a ship AND option is on then player repeats his turn
     } while (play_turn(p1, difficulty, randomness) && successfulHit == SuccessfulHit::RepeatTurn);
@@ -81,7 +81,6 @@ bool play_turn(player_t &opponent, const Difficulty *difficulty, const Randomnes
   // Static so that it saves the chance on each call
   static int chance_to_cheat = 10;
 
-  std::vector<std::vector<TileState>> map_before = opponent.map;
   print_map(opponent.map, opponent.map_size, true);
   print_ship_sizes_left(opponent.ships);
 
@@ -105,7 +104,7 @@ bool play_turn(player_t &opponent, const Difficulty *difficulty, const Randomnes
     }
   }
 
-  print_map(map_before, opponent.map_size, true, &opponent.map);
+  print_map(opponent.map, opponent.map_size, true, &shot);
   print_ship_sizes_left(opponent.ships);
 
   // End game if all ships have been hit
@@ -149,6 +148,7 @@ point_t get_shot_coords(const player_t &opponent, const Difficulty *difficulty, 
       std::cout << "Shoot at (letter, number): [A, " << (char) ('A' + opponent.map_size - 1) << "], [1, " << opponent.map_size << "]\n";
       std::cin >> y >> shot.x;
 
+      // Input isn't of type int (less than 4 bytes written error handling)
       if (std::cin.fail()) {
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');

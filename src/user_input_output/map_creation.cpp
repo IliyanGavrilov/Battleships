@@ -6,6 +6,13 @@ int create_custom_map(player_t &player) {
     std::cout << "Place ship with size " << player.ships[i].size << " (x1 y1 x2 y2) [1, " << player.map_size << "]\n";
     std::cin >> p1.x >> p1.y >> p2.x >> p2.y;
 
+    // Input isn't of type int (less than 4 bytes written error handling)
+    if (std::cin.fail()) {
+      std::cin.clear();
+      std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+      continue;
+    }
+
     // Fix coords to start from 0
     p1.x--;
     p1.y--;

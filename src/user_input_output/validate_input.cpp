@@ -1,34 +1,54 @@
 #include "validate_input.hh"
 
-bool validate_input(GameType gameType, int size, SuccessfulHit successfulHit, Mode mode, Difficulty difficulty, Randomness randomness) {
+bool validate_game_type(int gameType) {
   // Check game type
-  if (gameType != GameType::Load && gameType != GameType::New) {
+  if ((GameType) gameType != GameType::Load && (GameType) gameType != GameType::New) {
     return false;
   }
 
-  // Check to repeat turn or not after a successful ship hit
-  if (successfulHit != SuccessfulHit::RepeatTurn && successfulHit != SuccessfulHit::SwitchTurn) {
-    return false;
-  }
+  return true;
+}
 
+bool validate_map_size(int size) {
   // Check map size
   if (size < MIN_SIZE || size > MAX_SIZE) {
     return false;
   }
 
+  return true;
+}
+
+bool validate_successful_hit(int successfulHit) {
+  // Check to repeat turn or not after a successful ship hit
+  if ((SuccessfulHit) successfulHit != SuccessfulHit::RepeatTurn && (SuccessfulHit) successfulHit != SuccessfulHit::SwitchTurn) {
+    return false;
+  }
+
+  return true;
+}
+
+bool validate_mode(int mode) {
   // Check game mode
-  if (mode != Mode::Singleplayer && mode != Mode::Multiplayer) {
+  if ((Mode) mode != Mode::Singleplayer && (Mode) mode != Mode::Multiplayer) {
     return false;
   }
 
+  return true;
+}
+
+bool validate_difficulty(int difficulty) {
   // Check difficulty of bot
-  if (difficulty != Difficulty::Easy && difficulty != Difficulty::Medium &&
-     difficulty != Difficulty::Hard && difficulty != Difficulty::Impossible) {
+  if ((Difficulty) difficulty != Difficulty::Easy && (Difficulty) difficulty != Difficulty::Medium &&
+      (Difficulty) difficulty != Difficulty::Hard && (Difficulty) difficulty != Difficulty::Impossible) {
     return false;
   }
 
+  return true;
+}
+
+bool validate_randomness(int randomness) {
   // Check if bot can cheat/if randomness is rigged
-  if (randomness != Randomness::Normal && randomness != Randomness::Rigged) {
+  if ((Randomness) randomness != Randomness::Normal && (Randomness) randomness != Randomness::Rigged) {
     return false;
   }
 
@@ -48,12 +68,27 @@ bool validate_ship_placement(Placement ship_placement) {
 Placement get_placement() {
   int iPlacement;
   Placement ePlacement;
+
+  bool correct_input;
   do {
     // Ship placement (Map type)
     std::cout << "Select option:\n1. Create custom map\n2. Load map from file\n3. Random generation\n";
     std::cin >> iPlacement;
+
+    // Input isn't of type int (less than 4 bytes written error handling)
+    if (std::cin.fail()) {
+      std::cin.clear();
+      std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    }
+
     ePlacement = (Placement) iPlacement;
-  } while (!validate_ship_placement(ePlacement));
+
+    correct_input = validate_ship_placement(ePlacement);
+    if (!correct_input) {
+      clear_screen();
+      std::cerr << "Invalid input!\n";
+    }
+  } while (!correct_input);
 
   return ePlacement;
 }

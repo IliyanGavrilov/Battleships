@@ -1,4 +1,5 @@
 #include <iostream>
+#include <limits>
 
 #include "../enums/GameType.hh"
 #include "../enums/SuccessfulHit.hh"
@@ -15,9 +16,17 @@
 
 #pragma once
 
-bool validate_input(GameType gameType = GameType::New, int size = MIN_SIZE,
-                    SuccessfulHit successfulHit = SuccessfulHit::SwitchTurn, Mode mode = Mode::Singleplayer,
-                    Difficulty difficulty = Difficulty::Impossible, Randomness randomness = Randomness::Normal);
+bool validate_game_type(int gameType);
+
+bool validate_map_size(int size);
+
+bool validate_successful_hit(int successfulHit);
+
+bool validate_mode(int mode);
+
+bool validate_difficulty(int difficulty);
+
+bool validate_randomness(int randomness);
 
 bool validate_ship_placement(Placement ship_placement);
 
