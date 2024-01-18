@@ -19,8 +19,12 @@
 int create_custom_map(player_t &player) {
   for (int i = 0; i < player.ships_count;) {
     point_t p1, p2;
-    std::cout << "Place ship with size " << player.ships[i].size << " (x1 y1 x2 y2) [1, " << player.map_size << "]\n";
-    std::cin >> p1.x >> p1.y >> p2.x >> p2.y;
+    int x1, x2;
+    char y1, y2;
+
+    std::cout << "Place ship with size " << player.ships[i].size << " (y1, x1, y2, x2) (letter, number, letter number): [A, " <<
+      (char) ('A' + player.map_size - 1) << "], [1, " << player.map_size << "]\n";
+    std::cin >> y1 >> x1 >> y2 >> x2;
 
     // Input isn't of type int (less than 4 bytes written error handling)
     if (std::cin.fail()) {
@@ -29,11 +33,11 @@ int create_custom_map(player_t &player) {
       continue;
     }
 
-    // Fix coords to start from 0
-    p1.x--;
-    p1.y--;
-    p2.x--;
-    p2.y--;
+    // Fix coords to start from 0 and letters to numbers
+    p1.y = to_lower(y1) - 'a';
+    p1.x = x1 - 1;
+    p2.y = to_lower(y2) - 'a';
+    p2.x = x2 - 1;
 
     fix_start_end_coords(p1, p2);
 

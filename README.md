@@ -13,17 +13,18 @@ You can also compile the game yourself using Makefile or CMakeLists or gcc, gpp,
 
 	1. Game Type - 1. New game 2. Load game from file
 	Game Type = 1:
-		2. Should player repeat turn after successful hit? - 1. Yes 2. No
-		3. Map size - [5 - 20]
-		4. Amount of ships to place with size 2
-		5. Amount of ships to place with size 3
-		6. Amount of ships to place with size 4
-		7. Amount of ships to place with size 5
-		8. Game mode - 1. Singleplayer 2. Multiplayer
-		Game mode = 1:
-			9. Bot difficulty - 1. Easy 2. Medium 3. Hard 4. Impossible
-			Difficulty != 4:
-				Can bot cheat - 1. Yes 2. No
+		2. Map size - [5 - 20]
+        3. Should player repeat turn after successful hit? - 1. Yes 2. No
+        4. Game mode - 1. Singleplayer 2. Multiplayer
+            Game mode = 1:
+                5. Bot difficulty - 1. Easy 2. Medium 3. Hard 4. Impossible
+            Difficulty != 4:
+                6. Can bot cheat - 1. Yes 2. No
+
+		7. Amount of ships to place with size 2
+		8. Amount of ships to place with size 3
+		9. Amount of ships to place with size 4
+		10. Amount of ships to place with size 5
     Game Type = 2:
         Enter file name . . .
 	Map Type - 1. Custom 2. Load from file 3. Random
@@ -81,3 +82,7 @@ it would be a way faster method then just shooting at every single tile on the m
 The Hard difficulty computer also does this by finding the smallest ship that is still not sunk/hit and then shoots every n tiles. So  if
 the smallest ship size left is 2, computer would shoot at the first, third, fifth, seventh, etc. tile on every odd numbered column
 and shoot at the second, fourth, sixth, eight, etc. tile on every even numbered column.
+## Computer rigged randomness
+If the rigged randomness (can computer cheat) setting is enabled the computer has a 10% chance to hit any ship directly instead of making
+a random guess (or parity shot for Hard difficulty computer). This chance increases by 15% each time the computer shoots and misses and
+resets back to 10% if it has successfully hit a ship. This algorithm is achieved by a static variable and an array of all ship tiles.
