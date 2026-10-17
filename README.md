@@ -1,6 +1,6 @@
 # Battleships
 
-A simple console application made in C++ without much OOP. 
+A simple console application made in C++ without much OOP.
 [More about battleships](https://en.wikipedia.org/wiki/Battleship_(game)#Description)
 
 ## Installation
@@ -42,7 +42,7 @@ You can also compile the game yourself using Makefile or CMakeLists or gcc, gpp,
 	O - Miss
 	X - Hit
 	@ - Sunk
-#### 2.4 Singleplayer (vs computer)
+#### 2.2 Singleplayer (vs computer)
 There are 4 computer difficulties:
 - Easy - Computer shoots randomly
 - Medium - Computer shoots randomly until a ship is hit. If a ship is hit the computer tries to sink the ship fully before going for 
@@ -60,7 +60,7 @@ his turn by shooting another tile.
 
 The game starts off with Player 1's turn and prints Player 2's map hiding the ship locations and also prints how many ships of each type
 (size) are left on the opponent's field. Player 1 must input his shot coordinates and try to hit Player 2's ships. After entering a valid 
-shot coordinate (if the show was inside the map and the shot tile has not been shot before) the screen will be cleared and 2 boards will be
+shot coordinate (if the shot was inside the map and the shot tile has not been shot before) the screen will be cleared and 2 boards will be
 printed - the left one is the opponent's board before the shot and the right one is the one after the shot. Then if the shot was a hit and
 the option for repeating turn was enabled the player goes again. Otherwise, it's Player 2's turn. After Player 2's turn the game will ask
 if you would like to save the game state and quit or continue playing. The game ends when one of the players successfully sinks all the
@@ -77,9 +77,9 @@ algorithm and making normal shots.
 ## Computer parity shot
 An effective strategy in Battleships is to not shoot every single tile on the map, because that wouldn't be effective. Instead, the player
 should try to shoot every n tiles where n is the smallest ship size left. For example if the smallest ship left is with size 3 the player
-should shoot every 3 tiles and leave 2 space vertical and horizontal gaps and that way he's still guaranteed the hit the smallest ship, and
-it would be a way faster method then just shooting at every single tile on the map.
-The Hard difficulty computer also does this by finding the smallest ship that is still not sunk/hit and then shoots every n tiles. So  if
+should shoot every 3 tiles and leave 2 space vertical and horizontal gaps and that way he's still guaranteed to hit the smallest ship, and
+it would be a way faster method than just shooting at every single tile on the map.
+The Hard difficulty computer also does this by finding the smallest ship that is still not sunk/hit and then shoots every n tiles. So if
 the smallest ship size left is 2, computer would shoot at the first, third, fifth, seventh, etc. tile on every odd numbered column
 and shoot at the second, fourth, sixth, eight, etc. tile on every even numbered column.
 ## Computer rigged randomness
